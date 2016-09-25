@@ -1,4 +1,4 @@
-# antlr-calculator
+# Dangl.Calculator
 
 [![Build Status](https://jenkins.dan.gl/buildStatus/icon?job=Dangl.Calculator%20-%20Tests)](https://jenkins.dan.gl/job/Dangl.Calculator%20-%20Tests/)
 
