@@ -1,5 +1,14 @@
 {
-  "version": "1.0.0-*",
+  "authors": [ "Georg Dangl" ],
+  "copyright": "(c) 2016 Georg Dangl",
+  "description": "Package to evaluate mathematical formulas from strings",
+  "title": "Dangl.Calculator",
+  "packOptions": {
+    "projectUrl": "https://github.com/GeorgDangl/Dangl.Calculator",
+    "licenseUrl": "https://github.com/GeorgDangl/Dangl.Calculator/blob/master/LICENSE.md",
+    "owners": [ "Georg Dangl" ],
+  },
+  "version": "1.0.0",
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.1",
