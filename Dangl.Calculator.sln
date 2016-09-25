@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dangl.Calculator", "src\Dangl.Calculator\Dangl.Calculator.xproj", "{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dangl.Calculator.Tests", "test\Dangl.Calculator.Tests\Dangl.Calculator.Tests.xproj", "{621BFED8-ECD1-4B9B-9216-9648EA889ABC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6AEF004B-5B69-431F-9930-9A8B431945F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,11 +26,16 @@ Global
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{621BFED8-ECD1-4B9B-9216-9648EA889ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{621BFED8-ECD1-4B9B-9216-9648EA889ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{621BFED8-ECD1-4B9B-9216-9648EA889ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{621BFED8-ECD1-4B9B-9216-9648EA889ABC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4} = {14D9A542-33AB-4BA0-9406-EEC4CCA998CF}
+		{621BFED8-ECD1-4B9B-9216-9648EA889ABC} = {6AEF004B-5B69-431F-9930-9A8B431945F3}
 	EndGlobalSection
 EndGlobal
