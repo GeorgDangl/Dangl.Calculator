@@ -264,3 +264,6 @@ paket-files/
 __pycache__/
 *.pyc
 0Suchvorgang...
+
+# Generated ANTLR code
+Generated/
