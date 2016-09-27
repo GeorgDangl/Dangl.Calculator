@@ -6,7 +6,7 @@
   "packOptions": {
     "projectUrl": "https://github.com/GeorgDangl/Dangl.Calculator",
     "licenseUrl": "https://github.com/GeorgDangl/Dangl.Calculator/blob/master/LICENSE.md",
-    "owners": [ "Georg Dangl" ],
+    "owners": [ "Georg Dangl" ]
   },
   "version": "1.0.1",
   "dependencies": {
