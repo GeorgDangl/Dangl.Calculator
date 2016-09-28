@@ -179,81 +179,31 @@ public partial class CalculatorParser : Parser {
 			base.CopyFrom(context);
 		}
 	}
-	public partial class UnaryPlusContext : ExpressionContext {
+	public partial class TanContext : ExpressionContext {
+		public ITerminalNode TAN() { return GetToken(CalculatorParser.TAN, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public UnaryPlusContext(ExpressionContext context) { CopyFrom(context); }
+		public TanContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitUnaryPlus(this);
+			if (typedVisitor != null) return typedVisitor.VisitTan(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class ModContext : ExpressionContext {
-		public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		public ITerminalNode MOD() { return GetToken(CalculatorParser.MOD, 0); }
-		public ModContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMod(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class RoundkContext : ExpressionContext {
-		public ITerminalNode ROUNDK() { return GetToken(CalculatorParser.ROUNDK, 0); }
-		public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		public RoundkContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRoundk(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class EulerContext : ExpressionContext {
-		public ITerminalNode EULER() { return GetToken(CalculatorParser.EULER, 0); }
-		public EulerContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitEuler(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class AbsContext : ExpressionContext {
-		public ITerminalNode ABS() { return GetToken(CalculatorParser.ABS, 0); }
+	public partial class CoshContext : ExpressionContext {
+		public ITerminalNode COSH() { return GetToken(CalculatorParser.COSH, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public AbsContext(ExpressionContext context) { CopyFrom(context); }
+		public CoshContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAbs(this);
+			if (typedVisitor != null) return typedVisitor.VisitCosh(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class EexContext : ExpressionContext {
-		public ITerminalNode EEX() { return GetToken(CalculatorParser.EEX, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public EexContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitEex(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class MulDivContext : ExpressionContext {
+	public partial class SqRootContext : ExpressionContext {
 		public IToken op;
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
@@ -261,22 +211,25 @@ public partial class CalculatorParser : Parser {
 		public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		public MulDivContext(ExpressionContext context) { CopyFrom(context); }
+		public SqRootContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMulDiv(this);
+			if (typedVisitor != null) return typedVisitor.VisitSqRoot(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class ExpContext : ExpressionContext {
-		public ITerminalNode EXP() { return GetToken(CalculatorParser.EXP, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
+	public partial class NegExponentContext : ExpressionContext {
+		public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
 		}
-		public ExpContext(ExpressionContext context) { CopyFrom(context); }
+		public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		public ITerminalNode NEGEXPONENT() { return GetToken(CalculatorParser.NEGEXPONENT, 0); }
+		public NegExponentContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitExp(this);
+			if (typedVisitor != null) return typedVisitor.VisitNegExponent(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -295,15 +248,157 @@ public partial class CalculatorParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class LogContext : ExpressionContext {
-		public ITerminalNode LOG() { return GetToken(CalculatorParser.LOG, 0); }
+	public partial class Arctan2Context : ExpressionContext {
+		public ITerminalNode ARCTAN2() { return GetToken(CalculatorParser.ARCTAN2, 0); }
+		public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		public Arctan2Context(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArctan2(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class MulDivContext : ExpressionContext {
+		public IToken op;
+		public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		public MulDivContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMulDiv(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ArcsinContext : ExpressionContext {
+		public ITerminalNode ARCSIN() { return GetToken(CalculatorParser.ARCSIN, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public LogContext(ExpressionContext context) { CopyFrom(context); }
+		public ArcsinContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitLog(this);
+			if (typedVisitor != null) return typedVisitor.VisitArcsin(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class UnaryPlusContext : ExpressionContext {
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public UnaryPlusContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnaryPlus(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ArccotContext : ExpressionContext {
+		public ITerminalNode ARCCOT() { return GetToken(CalculatorParser.ARCCOT, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ArccotContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArccot(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ArccosContext : ExpressionContext {
+		public ITerminalNode ARCCOS() { return GetToken(CalculatorParser.ARCCOS, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ArccosContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArccos(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class EulerContext : ExpressionContext {
+		public ITerminalNode EULER() { return GetToken(CalculatorParser.EULER, 0); }
+		public EulerContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitEuler(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ArctanContext : ExpressionContext {
+		public ITerminalNode ARCTAN() { return GetToken(CalculatorParser.ARCTAN, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ArctanContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArctan(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ParenthesisContext : ExpressionContext {
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ParenthesisContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParenthesis(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class AbsContext : ExpressionContext {
+		public ITerminalNode ABS() { return GetToken(CalculatorParser.ABS, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public AbsContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAbs(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class NumberContext : ExpressionContext {
+		public ITerminalNode NUMBER() { return GetToken(CalculatorParser.NUMBER, 0); }
+		public NumberContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNumber(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class SinhContext : ExpressionContext {
+		public ITerminalNode SINH() { return GetToken(CalculatorParser.SINH, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public SinhContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSinh(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class RoundContext : ExpressionContext {
+		public ITerminalNode ROUND() { return GetToken(CalculatorParser.ROUND, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public RoundContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRound(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -319,6 +414,15 @@ public partial class CalculatorParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
+	public partial class PiContext : ExpressionContext {
+		public ITerminalNode PI() { return GetToken(CalculatorParser.PI, 0); }
+		public PiContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPi(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
 	public partial class TanhContext : ExpressionContext {
 		public ITerminalNode TANH() { return GetToken(CalculatorParser.TANH, 0); }
 		public ExpressionContext expression() {
@@ -328,6 +432,84 @@ public partial class CalculatorParser : Parser {
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTanh(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class FloorContext : ExpressionContext {
+		public ITerminalNode FLOOR() { return GetToken(CalculatorParser.FLOOR, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public FloorContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFloor(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class LnContext : ExpressionContext {
+		public ITerminalNode LN() { return GetToken(CalculatorParser.LN, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public LnContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLn(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ModContext : ExpressionContext {
+		public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		public ITerminalNode MOD() { return GetToken(CalculatorParser.MOD, 0); }
+		public ModContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMod(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class LogContext : ExpressionContext {
+		public ITerminalNode LOG() { return GetToken(CalculatorParser.LOG, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public LogContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLog(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class AddSubContext : ExpressionContext {
+		public IToken op;
+		public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		public AddSubContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAddSub(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class CosContext : ExpressionContext {
+		public ITerminalNode COS() { return GetToken(CalculatorParser.COS, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public CosContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCos(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -355,135 +537,15 @@ public partial class CalculatorParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class Arctan2Context : ExpressionContext {
-		public ITerminalNode ARCTAN2() { return GetToken(CalculatorParser.ARCTAN2, 0); }
-		public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		public Arctan2Context(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitArctan2(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class TanContext : ExpressionContext {
-		public ITerminalNode TAN() { return GetToken(CalculatorParser.TAN, 0); }
+	public partial class CotContext : ExpressionContext {
+		public ITerminalNode COT() { return GetToken(CalculatorParser.COT, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public TanContext(ExpressionContext context) { CopyFrom(context); }
+		public CotContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitTan(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class ArccosContext : ExpressionContext {
-		public ITerminalNode ARCCOS() { return GetToken(CalculatorParser.ARCCOS, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public ArccosContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitArccos(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class NumberContext : ExpressionContext {
-		public ITerminalNode NUMBER() { return GetToken(CalculatorParser.NUMBER, 0); }
-		public NumberContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitNumber(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class ArccotContext : ExpressionContext {
-		public ITerminalNode ARCCOT() { return GetToken(CalculatorParser.ARCCOT, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public ArccotContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitArccot(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class AddSubContext : ExpressionContext {
-		public IToken op;
-		public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		public AddSubContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAddSub(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class RadContext : ExpressionContext {
-		public ITerminalNode RAD() { return GetToken(CalculatorParser.RAD, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public RadContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRad(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class RoundContext : ExpressionContext {
-		public ITerminalNode ROUND() { return GetToken(CalculatorParser.ROUND, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public RoundContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRound(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class SinhContext : ExpressionContext {
-		public ITerminalNode SINH() { return GetToken(CalculatorParser.SINH, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public SinhContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitSinh(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class LnContext : ExpressionContext {
-		public ITerminalNode LN() { return GetToken(CalculatorParser.LN, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public LnContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitLn(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class PiContext : ExpressionContext {
-		public ITerminalNode PI() { return GetToken(CalculatorParser.PI, 0); }
-		public PiContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitPi(this);
+			if (typedVisitor != null) return typedVisitor.VisitCot(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -513,39 +575,15 @@ public partial class CalculatorParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class FloorContext : ExpressionContext {
-		public ITerminalNode FLOOR() { return GetToken(CalculatorParser.FLOOR, 0); }
+	public partial class RadContext : ExpressionContext {
+		public ITerminalNode RAD() { return GetToken(CalculatorParser.RAD, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public FloorContext(ExpressionContext context) { CopyFrom(context); }
+		public RadContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFloor(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class SinContext : ExpressionContext {
-		public ITerminalNode SIN() { return GetToken(CalculatorParser.SIN, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public SinContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitSin(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class CeilContext : ExpressionContext {
-		public ITerminalNode CEIL() { return GetToken(CalculatorParser.CEIL, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public CeilContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCeil(this);
+			if (typedVisitor != null) return typedVisitor.VisitRad(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -561,65 +599,27 @@ public partial class CalculatorParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class CosContext : ExpressionContext {
-		public ITerminalNode COS() { return GetToken(CalculatorParser.COS, 0); }
+	public partial class SinContext : ExpressionContext {
+		public ITerminalNode SIN() { return GetToken(CalculatorParser.SIN, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public CosContext(ExpressionContext context) { CopyFrom(context); }
+		public SinContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCos(this);
+			if (typedVisitor != null) return typedVisitor.VisitSin(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class SqRootContext : ExpressionContext {
-		public IToken op;
-		public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		public SqRootContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitSqRoot(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class ArcsinContext : ExpressionContext {
-		public ITerminalNode ARCSIN() { return GetToken(CalculatorParser.ARCSIN, 0); }
+	public partial class EexContext : ExpressionContext {
+		public ITerminalNode EEX() { return GetToken(CalculatorParser.EEX, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public ArcsinContext(ExpressionContext context) { CopyFrom(context); }
+		public EexContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitArcsin(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class CoshContext : ExpressionContext {
-		public ITerminalNode COSH() { return GetToken(CalculatorParser.COSH, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public CoshContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCosh(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class ParenthesisContext : ExpressionContext {
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public ParenthesisContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParenthesis(this);
+			if (typedVisitor != null) return typedVisitor.VisitEex(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -638,42 +638,42 @@ public partial class CalculatorParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class CotContext : ExpressionContext {
-		public ITerminalNode COT() { return GetToken(CalculatorParser.COT, 0); }
+	public partial class CeilContext : ExpressionContext {
+		public ITerminalNode CEIL() { return GetToken(CalculatorParser.CEIL, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
-		public CotContext(ExpressionContext context) { CopyFrom(context); }
+		public CeilContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCot(this);
+			if (typedVisitor != null) return typedVisitor.VisitCeil(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class NegExponentContext : ExpressionContext {
+	public partial class ExpContext : ExpressionContext {
+		public ITerminalNode EXP() { return GetToken(CalculatorParser.EXP, 0); }
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ExpContext(ExpressionContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExp(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class RoundkContext : ExpressionContext {
+		public ITerminalNode ROUNDK() { return GetToken(CalculatorParser.ROUNDK, 0); }
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
 		public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		public ITerminalNode NEGEXPONENT() { return GetToken(CalculatorParser.NEGEXPONENT, 0); }
-		public NegExponentContext(ExpressionContext context) { CopyFrom(context); }
+		public RoundkContext(ExpressionContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitNegExponent(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class ArctanContext : ExpressionContext {
-		public ITerminalNode ARCTAN() { return GetToken(CalculatorParser.ARCTAN, 0); }
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public ArctanContext(ExpressionContext context) { CopyFrom(context); }
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ICalculatorVisitor<TResult> typedVisitor = visitor as ICalculatorVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitArctan(this);
+			if (typedVisitor != null) return typedVisitor.VisitRoundk(this);
 			else return visitor.VisitChildren(this);
 		}
 	}

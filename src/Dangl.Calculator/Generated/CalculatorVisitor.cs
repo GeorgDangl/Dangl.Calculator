@@ -42,68 +42,36 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by the <c>UnaryPlus</c>
+	/// Visit a parse tree produced by the <c>Tan</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitUnaryPlus([NotNull] CalculatorParser.UnaryPlusContext context);
+	Result VisitTan([NotNull] CalculatorParser.TanContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Mod</c>
+	/// Visit a parse tree produced by the <c>Cosh</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMod([NotNull] CalculatorParser.ModContext context);
+	Result VisitCosh([NotNull] CalculatorParser.CoshContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Roundk</c>
+	/// Visit a parse tree produced by the <c>SqRoot</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitRoundk([NotNull] CalculatorParser.RoundkContext context);
+	Result VisitSqRoot([NotNull] CalculatorParser.SqRootContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Euler</c>
+	/// Visit a parse tree produced by the <c>NegExponent</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitEuler([NotNull] CalculatorParser.EulerContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Abs</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAbs([NotNull] CalculatorParser.AbsContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Eex</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEex([NotNull] CalculatorParser.EexContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>MulDiv</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMulDiv([NotNull] CalculatorParser.MulDivContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Exp</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExp([NotNull] CalculatorParser.ExpContext context);
+	Result VisitNegExponent([NotNull] CalculatorParser.NegExponentContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Exponent</c>
@@ -114,12 +82,108 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitExponent([NotNull] CalculatorParser.ExponentContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Log</c>
+	/// Visit a parse tree produced by the <c>Arctan2</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitLog([NotNull] CalculatorParser.LogContext context);
+	Result VisitArctan2([NotNull] CalculatorParser.Arctan2Context context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>MulDiv</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMulDiv([NotNull] CalculatorParser.MulDivContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Arcsin</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArcsin([NotNull] CalculatorParser.ArcsinContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>UnaryPlus</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnaryPlus([NotNull] CalculatorParser.UnaryPlusContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Arccot</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArccot([NotNull] CalculatorParser.ArccotContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Arccos</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArccos([NotNull] CalculatorParser.ArccosContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Euler</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEuler([NotNull] CalculatorParser.EulerContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Arctan</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArctan([NotNull] CalculatorParser.ArctanContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Parenthesis</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenthesis([NotNull] CalculatorParser.ParenthesisContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Abs</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAbs([NotNull] CalculatorParser.AbsContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Number</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNumber([NotNull] CalculatorParser.NumberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Sinh</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSinh([NotNull] CalculatorParser.SinhContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Round</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRound([NotNull] CalculatorParser.RoundContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Trunc</c>
@@ -130,12 +194,68 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTrunc([NotNull] CalculatorParser.TruncContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by the <c>Pi</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPi([NotNull] CalculatorParser.PiContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>Tanh</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTanh([NotNull] CalculatorParser.TanhContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Floor</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFloor([NotNull] CalculatorParser.FloorContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Ln</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLn([NotNull] CalculatorParser.LnContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Mod</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMod([NotNull] CalculatorParser.ModContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Log</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLog([NotNull] CalculatorParser.LogContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>AddSub</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAddSub([NotNull] CalculatorParser.AddSubContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Cos</c>
+	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCos([NotNull] CalculatorParser.CosContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Deg</c>
@@ -154,92 +274,12 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSqrt([NotNull] CalculatorParser.SqrtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Arctan2</c>
+	/// Visit a parse tree produced by the <c>Cot</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitArctan2([NotNull] CalculatorParser.Arctan2Context context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Tan</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTan([NotNull] CalculatorParser.TanContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Arccos</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArccos([NotNull] CalculatorParser.ArccosContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Number</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitNumber([NotNull] CalculatorParser.NumberContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Arccot</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArccot([NotNull] CalculatorParser.ArccotContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>AddSub</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAddSub([NotNull] CalculatorParser.AddSubContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Rad</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRad([NotNull] CalculatorParser.RadContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Round</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRound([NotNull] CalculatorParser.RoundContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Sinh</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSinh([NotNull] CalculatorParser.SinhContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Ln</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLn([NotNull] CalculatorParser.LnContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Pi</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPi([NotNull] CalculatorParser.PiContext context);
+	Result VisitCot([NotNull] CalculatorParser.CotContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Whole</c>
@@ -258,28 +298,12 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitUnary([NotNull] CalculatorParser.UnaryContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Floor</c>
+	/// Visit a parse tree produced by the <c>Rad</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitFloor([NotNull] CalculatorParser.FloorContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Sin</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSin([NotNull] CalculatorParser.SinContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Ceil</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCeil([NotNull] CalculatorParser.CeilContext context);
+	Result VisitRad([NotNull] CalculatorParser.RadContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Sqr</c>
@@ -290,44 +314,20 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSqr([NotNull] CalculatorParser.SqrContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Cos</c>
+	/// Visit a parse tree produced by the <c>Sin</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitCos([NotNull] CalculatorParser.CosContext context);
+	Result VisitSin([NotNull] CalculatorParser.SinContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>SqRoot</c>
+	/// Visit a parse tree produced by the <c>Eex</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSqRoot([NotNull] CalculatorParser.SqRootContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Arcsin</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArcsin([NotNull] CalculatorParser.ArcsinContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Cosh</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCosh([NotNull] CalculatorParser.CoshContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Parenthesis</c>
-	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParenthesis([NotNull] CalculatorParser.ParenthesisContext context);
+	Result VisitEex([NotNull] CalculatorParser.EexContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Pow</c>
@@ -338,28 +338,28 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitPow([NotNull] CalculatorParser.PowContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Cot</c>
+	/// Visit a parse tree produced by the <c>Ceil</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitCot([NotNull] CalculatorParser.CotContext context);
+	Result VisitCeil([NotNull] CalculatorParser.CeilContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>NegExponent</c>
+	/// Visit a parse tree produced by the <c>Exp</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNegExponent([NotNull] CalculatorParser.NegExponentContext context);
+	Result VisitExp([NotNull] CalculatorParser.ExpContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Arctan</c>
+	/// Visit a parse tree produced by the <c>Roundk</c>
 	/// labeled alternative in <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitArctan([NotNull] CalculatorParser.ArctanContext context);
+	Result VisitRoundk([NotNull] CalculatorParser.RoundkContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.calculator"/>.
