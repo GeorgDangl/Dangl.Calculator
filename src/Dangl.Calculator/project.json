@@ -6,11 +6,16 @@
   "packOptions": {
     "projectUrl": "https://github.com/GeorgDangl/Dangl.Calculator",
     "licenseUrl": "https://github.com/GeorgDangl/Dangl.Calculator/blob/master/LICENSE.md",
-    "owners": [ "Georg Dangl" ]
+    "owners": [ "Georg Dangl" ],
+    "releaseNotes": "1.0.2: Changed dependencies to only need Antlr4.Runtime instead of the full Antlr4 package"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": {
-    "Antlr4": "4.5.3.1-beta001"
+    "Antlr4.Runtime": "4.5.3.1-beta001",
+    "Antlr4.CodeGenerator": {
+      "version": "4.5.3.1-beta001",
+      "type": "build"
+    }
   },
   "frameworks": {
     "netcoreapp1.0": {
