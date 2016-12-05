@@ -11,7 +11,6 @@
   },
   "version": "1.0.3",
   "dependencies": {
-    "NETStandard.Library": "1.6.1",
     "Antlr4.Runtime": "4.5.4-beta001",
     "Antlr4.CodeGenerator": {
       "version": "4.5.4-beta001",
@@ -19,7 +18,12 @@
     }
   },
   "frameworks": {
-    "netstandard1.3": {} 
+    "netstandard1.3": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.1"
+      }
+    },
+    "net46": { } 
   },
   "scripts": {
     "precompile": [
