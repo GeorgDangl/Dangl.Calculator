@@ -1,6 +1,6 @@
 # Dangl.Calculator
 
-[![Build Status](https://jenkins.dan.gl/buildStatus/icon?job=Dangl.Calculator%20-%20Tests)](https://jenkins.dan.gl/job/Dangl.Calculator%20-%20Tests/)
+[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Calculator.Tests)](https://jenkins.dangl.me/job/Dangl.Calculator.Tests/)
 
 This calculator is using the [ANTLR4 C# target](https://github.com/tunnelvisionlabs/antlr4cs)
 to calculate results from formulas that are passed in as string.
@@ -26,10 +26,10 @@ using Dangl.Calculator;
 public void Example()
 {
     var formula = "5+5";
-    var calculationResult = Calculator.Calculate(formula);
+    var calculation = Calculator.Calculate(formula);
 
-    Console.WriteLine(calculationResult.Result);
-    Console.WriteLine(calculationResult.IsValid);
+    Console.WriteLine(calculation.Result);
+    Console.WriteLine(calculation.IsValid);
 
     // 10.0
     // true
@@ -61,8 +61,8 @@ public void Example()
 `LN  expression`                           | Logarithm to e                        |
 `EEX  expression`                          | 10 ^ expr                             |
 `LOG  expression`                          | Logarithm to 10                       |
-`RAD  expression`                          | Angle to radians (360° base)          |
-`DEG  expression`                          | Radians to angle (360° base)          |
+`RAD  expression`                          | Angle to radians (360Â° base)          |
+`DEG  expression`                          | Radians to angle (360Â° base)          |
 `SQRT expression`                          | Square root                           |
 `SQR expression`                           | Square product                        |
 `expression op = ('^'|'**') expression`    | expr_1 to the expr_2 th power         |
