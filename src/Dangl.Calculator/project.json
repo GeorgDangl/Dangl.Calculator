@@ -3,9 +3,9 @@
   "copyright": "(c) 2016 Georg Dangl",
   "description": "Package to evaluate mathematical formulas from strings",
   "title": "Dangl.Calculator",
-  "iconUrl": "https://blog.dangl.me/media/1114/gd_icon_256.png",
   "packOptions": {
     "projectUrl": "https://github.com/GeorgDangl/Dangl.Calculator",
+    "iconUrl": "https://blog.dangl.me/media/1114/gd_icon_256.png",
     "licenseUrl": "https://github.com/GeorgDangl/Dangl.Calculator/blob/master/LICENSE.md",
     "owners": [ "Georg Dangl" ],
     "releaseNotes": "1.0.3: Target NETStandard 1.3"
