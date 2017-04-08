@@ -65,12 +65,12 @@ public void Example()
 `DEG  expression`                          | Radians to angle (360° base)          |
 `SQRT expression`                          | Square root                           |
 `SQR expression`                           | Square product                        |
-`expression op = ('^'|'**') expression`    | expr_1 to the expr_2 th power         |
-`expression (MOD | '%' ) expression`       | Modulo                                |
+`expression op = ('^'\|'**') expression`    | expr_1 to the expr_2 th power         |
+`expression (MOD \| '%' ) expression`       | Modulo                                |
 `expression DIV expression`                | Whole part of division rest           |
-`expression op = ('~'|'//') expression`    | expr_1 nth root of expr_2             |
-`expression op = ('*'|'/') expression`     | Multiplication or division            |
-`expression op = ('+'|'-') expression`     | Addition or subtraction               |
+`expression op = ('~'\|'//') expression`    | expr_1 nth root of expr_2             |
+`expression op = ('*'\|'/') expression`     | Multiplication or division            |
+`expression op = ('+'\|'-') expression`     | Addition or subtraction               |
 `NUMBER	`                                  | Single integer or float number        |
 `'(' expression ')'`                       | Expression within parentheses         |
 `PI '()'?`                                 | Mathematical constant pi = 3,141593   |
