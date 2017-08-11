@@ -1,18 +1,4 @@
-﻿// **************************************
-// *									*
-// *  Last change: 2016-09-25			*
-// *  Class for calculating         	*
-// *  string expressions    			*
-// *  © 2015 Georg Dangl				*
-// *  info@georgdangl.de				*
-// *									*
-// **************************************
-// *									*
-// *  Uses ANTLR4 Grammar           	*
-// *  www.antlr.org						*
-// **************************************
-
-using System.Linq;
+﻿using System.Linq;
 using Antlr4.Runtime;
 using Dangl.Calculator.Generated;
 
