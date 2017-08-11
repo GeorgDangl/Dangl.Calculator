@@ -55,14 +55,8 @@ namespace Dangl.Calculator
             var parser = new CalculatorParser(tokenStream);
 
             // Removing default error listeners due to noise in debug
-            foreach (var errorListener in lexer.ErrorListeners)
-            {
-                lexer.RemoveErrorListener(errorListener);
-            }
-            foreach (var errorListener in parser.ErrorListeners)
-            {
-                parser.RemoveErrorListener(errorListener);
-            }
+            lexer.RemoveErrorListeners();
+            parser.RemoveErrorListeners();
             // But adding the custom one
             var customErrorListener = new CalculatorErrorListener();
             parser.AddErrorListener(customErrorListener);
