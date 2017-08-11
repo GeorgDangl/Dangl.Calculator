@@ -19,6 +19,22 @@ Whenever a calculation is performed, a `CalculationResult` is returned with the 
 
 Install it via NuGet: `Dangl.Calculator`
 
+## Project Configuration
+
+If this project is consumed in a project using the full .Net framework with a newer version of
+`Antlr4.Runtime`, the necessary AssemblyBindingRedirects are not automatically generated with the current
+dotnet CLI tooling. This is scheduled to be fixed with the 2.0 release. In the meantime, the following should
+be added to the consumers `csproj`:
+
+  ```xml
+<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+</PropertyGroup>
+```
+
+The `Condition=" '$(TargetFramework)' == 'net461' "` attribute may be changed as necessary or removed.
+
 ## Example
 
 ``` csharp
