@@ -67,7 +67,7 @@ namespace Dangl.Calculator.Tests
             [Fact]
             public void Calc_Spaces_08()
             {
-                RunTest("1 0+1", 11);
+                RunTest("10 0+1", 101);
             }
 
             [Fact]
@@ -86,6 +86,12 @@ namespace Dangl.Calculator.Tests
             public void Calc_Spaces_11()
             {
                 RunTest("1 * 1     2 + 1    4* 7", 110);
+            }
+
+            [Fact]
+            public void Calc_Spaces_12()
+            {
+                RunTest("3 3", 33);
             }
 
             [Fact]
@@ -158,6 +164,12 @@ namespace Dangl.Calculator.Tests
             public void Calc_Comments_12()
             {
                 RunTest("a\"454\"bs\"dfdfd\"(\"\"sqr(\"mouse\"-\"house\"5))", 25);
+            }
+
+            [Fact]
+            public void Calc_Comments_13()
+            {
+                RunTest("1/*Text between numbers*/2", 12);
             }
 
             [Fact]

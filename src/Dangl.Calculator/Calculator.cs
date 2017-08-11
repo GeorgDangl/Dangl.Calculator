@@ -46,9 +46,9 @@ namespace Dangl.Calculator
             // But adding the custom one
             var customErrorListener = new CalculatorErrorListener();
             parser.AddErrorListener(customErrorListener);
-
             var visitor = new CalculatorVisitor();
-            var result = visitor.Visit(parser.calculator().expression());
+            var calculatorExpression = parser.calculator().expression();
+            var result = visitor.Visit(calculatorExpression);
             var isValid = customErrorListener.IsValid;
             var errorLocation = customErrorListener.ErrorLocation;
             var errorMessage = customErrorListener.ErrorMessage;
