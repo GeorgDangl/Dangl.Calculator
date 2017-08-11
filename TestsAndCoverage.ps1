@@ -10,24 +10,32 @@ $latestCoberturaConverter = Join-Path -Path (Get-ChildItem -Path $nugetCobertura
 
 $testRuns = 1;
 
+If (Test-Path "$PSScriptRoot\OpenCover.coverageresults"){
+	Remove-Item "$PSScriptRoot\OpenCover.coverageresults"
+}
+
+If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
+	Remove-Item "$PSScriptRoot\Cobertura.coverageresults"
+}
+
 foreach ($testProject in $testProjects){
-    foreach ($testFramework in $testFrameworks) {
-        # Arguments for running dotnet
-        $dotnetArguments = "test", "-f $testFramework", "`"`"$PSScriptRoot\test\$testProject`"`"", "-xml result_$testRuns.testresults"
+    # Arguments for running dotnet
+    $dotnetArguments = "xunit", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
-        "Running tests with OpenCover"
-        & $latestOpenCover `
-            -register:user `
-            -target:dotnet.exe `
-            "-targetargs:$dotnetArguments" `
-            -returntargetcode `
-            -output:"$PSScriptRoot\OpenCover.coverageresults" `
-            -mergeoutput `
-            -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
-            "-filter:+[Dangl.Calculator*]* -[*.Tests]* -[*.Tests.*]*"
+    "Running tests with OpenCover"
+    & $latestOpenCover `
+        -register:user `
+        -target:dotnet.exe `
+        "-targetargs:$dotnetArguments" `
+        -targetdir:$PSScriptRoot\test\$testProject `
+        -returntargetcode `
+        -output:"$PSScriptRoot\OpenCover.coverageresults" `
+        -mergeoutput `
+        -oldstyle `
+        -excludebyattribute:System.CodeDom.Compiler.GeneratedCodeAttribute `
+        "-filter:+[Dangl.Calculator*]* -[*.Tests]* -[*.Tests.*]*"
 
-        $testRuns++
-    }
+    $testRuns++
 }
 
 "Converting coverage reports to Cobertura format"
