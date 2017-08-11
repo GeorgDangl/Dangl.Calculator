@@ -26,23 +26,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4.CodeGenerator" Version="4.5.4-beta001">
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.4" />
+    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5-beta001">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="Antlr4.Runtime" Version="4.5.4-beta001" />
-  </ItemGroup>
-
-  <Target Name="PrecompileScript" BeforeTargets="BeforeBuild" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
-    <Exec Command="BuildANTLR.bat" />
-  </Target>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <PackageReference Include="Antlr4.Runtime" Version="4.5.3" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Include="Calculator.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Dangl.Calculator.Generated</CustomToolNamespace>
+      <Listener>False</Listener>
+      <Visitor>True</Visitor>
+    </Antlr4>
   </ItemGroup>
 
 </Project>
