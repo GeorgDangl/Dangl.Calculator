@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <Description>Package to evaluate mathematical formulas from strings</Description>
+    <Authors>Georg Dangl</Authors>
     <Copyright>(c) 2017 Georg Dangl</Copyright>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <AssemblyTitle>Dangl.Calculator</AssemblyTitle>
@@ -17,6 +18,8 @@
     <PackageIconUrl>https://blog.dangl.me/media/1114/gd_icon_256.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/GeorgDangl/Dangl.Calculator</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/GeorgDangl/Dangl.Calculator/blob/master/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/GeorgDangl/Dangl.Calculator.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.1</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
