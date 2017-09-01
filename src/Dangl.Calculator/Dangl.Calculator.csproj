@@ -5,7 +5,8 @@
     <Copyright>(c) 2017 Georg Dangl</Copyright>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <AssemblyTitle>Dangl.Calculator</AssemblyTitle>
-    <Version>1.0.4</Version>
+    <VersionPrefix>1.0.5</VersionPrefix>
+    <VersionSuffix Condition=" '$(GIT_BRANCH)' == 'origin/dev'">build-$(BUILD_NUMBER)</VersionSuffix>
     <Authors>Georg Dangl</Authors>
     <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
