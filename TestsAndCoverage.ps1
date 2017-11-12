@@ -1,5 +1,7 @@
 $testProjects = "Dangl.Calculator.Tests"
-$testFrameworks = "net461", "net46", "netcoreapp1.0", "netcoreapp1.1"
+
+& dotnet restore
+& dotnet build -c Debug
 
 # Get the most recent OpenCover NuGet package from the dotnet nuget packages
 $nugetOpenCoverPackage = Join-Path -Path $env:USERPROFILE -ChildPath "\.nuget\packages\OpenCover"
@@ -17,10 +19,15 @@ If (Test-Path "$PSScriptRoot\OpenCover.coverageresults"){
 If (Test-Path "$PSScriptRoot\Cobertura.coverageresults"){
 	Remove-Item "$PSScriptRoot\Cobertura.coverageresults"
 }
+	
+$oldResults = Get-ChildItem -Path "$PSScriptRoot\testRuns_*.testresults"
+if ($oldResults) {
+    Remove-Item $oldResults
+}
 
 foreach ($testProject in $testProjects){
     # Arguments for running dotnet
-    $dotnetArguments = "xunit", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
+    $dotnetArguments = "xunit", "-nobuild", "-xml `"`"$PSScriptRoot\testRuns_$testRuns.testresults`"`""
 
     "Running tests with OpenCover"
     & $latestOpenCover `
@@ -37,6 +44,11 @@ foreach ($testProject in $testProjects){
 
     $testRuns++
 }
+
+"Prepending framework to test method name for better CI visualization"
+$resultsGlobPattern = "results_*.testresults"
+$prependFrameworkScript = ".\AppendxUnitFramework.ps1"
+& $prependFrameworkScript $resultsGlobPattern "$PSScriptRoot"
 
 "Converting coverage reports to Cobertura format"
 & $latestCoberturaConverter `
