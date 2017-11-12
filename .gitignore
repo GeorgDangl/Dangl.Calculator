@@ -266,3 +266,8 @@ __pycache__/
 
 *.coverageresults
 *.testresults
+
+generated_docs/**/*
+docs.zip
+
+docs/docfx.console.**/*
