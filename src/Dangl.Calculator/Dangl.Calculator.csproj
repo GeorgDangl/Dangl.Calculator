@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Package to evaluate mathematical formulas from strings</Description>
-    <Copyright>(c) 2017 Georg Dangl</Copyright>
+    <Copyright>(c) $([System.DateTime]::Now.Year) Georg Dangl</Copyright>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <AssemblyTitle>Dangl.Calculator</AssemblyTitle>
     <VersionPrefix>1.0.6</VersionPrefix>
