@@ -6,6 +6,7 @@ Param(
 )
 
 Copy-Item $PSScriptRoot\README.md $PSScriptRoot\docs\index.md
+Copy-Item $PSScriptRoot\LICENSE.md $PSScriptRoot\docs\LICENSE.md
 
 # Generating documentation to generated_docs folder
 cd docs
