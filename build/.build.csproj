@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <RootNamespace></RootNamespace>
+    <IsPackable>False</IsPackable>
+    <NoWarn>CS0649;CS0169</NoWarn>
+    
+    <!-- NUKE CONFIGURATION -->
+    <NukeVersion>0.2.26</NukeVersion>
+    <NukeCodeGeneration>False</NukeCodeGeneration>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="1.0.1" />
+    <PackageReference Include="Nuke.Common" Version="$(NukeVersion)" />
+    <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />
+    <PackageReference Include="GitVersion.CommandLine" Version="4.0.0-beta0012" />
+    <PackageReference Include="Nuke.WebDocu" Version="1.0.2" />
+    <PackageReference Include="Nuke.GitHub" Version="1.0.2" />
+    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2018.1.0-eap01" />
+    <PackageReference Include="ReportGenerator" Version="3.1.2" />
+    <PackageReference Include="docfx.console" Version="2.31.0">
+      <ExcludeAssets>build</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <NukeMetadata Include="**/*.json" Exclude="bin/**;obj/**" />
+    <None Remove="*.csproj.DotSettings;*.ref.*.txt" />
+  </ItemGroup>
+
+</Project>

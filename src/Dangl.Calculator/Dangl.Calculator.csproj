@@ -3,22 +3,12 @@
   <PropertyGroup>
     <Description>Package to evaluate mathematical formulas from strings</Description>
     <Copyright>(c) $([System.DateTime]::Now.Year) Georg Dangl</Copyright>
-    <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">True</GeneratePackageOnBuild>
     <AssemblyTitle>Dangl.Calculator</AssemblyTitle>
-    <VersionPrefix>1.0.6</VersionPrefix>
-    <VersionSuffix Condition=" '$(GIT_BRANCH)' == 'origin/dev'">build-$(BUILD_NUMBER)</VersionSuffix>
     <Authors>Georg Dangl</Authors>
     <TargetFrameworks>netstandard2.0;netstandard1.1;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Dangl.Calculator</AssemblyName>
     <PackageId>Dangl.Calculator</PackageId>
-    <PackageReleaseNotes>
-      1.0.5: Downgrade to netstandard1.1 and net45 for broader compatibility
-    
-      1.0.4: Update ANTLR to latest version
-      
-      1.0.3: Target NETStandard 1.3
-    </PackageReleaseNotes>
     <PackageIconUrl>https://blog.dangl.me/media/1114/gd_icon_256.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/GeorgDangl/Dangl.Calculator</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/GeorgDangl/Dangl.Calculator/blob/master/LICENSE.md</PackageLicenseUrl>
