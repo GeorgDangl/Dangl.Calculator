@@ -271,3 +271,4 @@ generated_docs/**/*
 docs.zip
 
 docs/docfx.console.**/*
+output/

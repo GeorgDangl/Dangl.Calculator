@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", "build\.build.csproj", "{FCAE6E2B-0767-4A72-9011-523D79095BCA}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{14D9A542-33AB-4BA0-9406-EEC4CCA998CF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28154CDD-0EDC-4658-9DBA-B02D5366AC2F}"
 	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.md = CHANGELOG.md
+		docfx.json = docfx.json
+		GitVersion.yml = GitVersion.yml
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 		TestsAndCoverage.ps1 = TestsAndCoverage.ps1
+		toc.yml = toc.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6AEF004B-5B69-431F-9930-9A8B431945F3}"
@@ -24,6 +30,8 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCAE6E2B-0767-4A72-9011-523D79095BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAE6E2B-0767-4A72-9011-523D79095BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,5 +47,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6ADBFC78-3CC4-4CAC-BFEB-ADE2BCB52BF4} = {14D9A542-33AB-4BA0-9406-EEC4CCA998CF}
 		{621BFED8-ECD1-4B9B-9216-9648EA889ABC} = {6AEF004B-5B69-431F-9930-9A8B431945F3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B58C156B-CD25-4485-8E18-BED3AF1AF434}
 	EndGlobalSection
 EndGlobal
