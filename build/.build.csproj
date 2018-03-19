@@ -20,9 +20,9 @@
     <PackageReference Include="GitVersion.CommandLine" Version="4.0.0-beta0012" />
     <PackageReference Include="Nuke.WebDocu" Version="1.0.2" />
     <PackageReference Include="Nuke.GitHub" Version="1.0.2" />
-    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2018.1.0-eap01" />
+    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2018.1.0-eap03" />
     <PackageReference Include="ReportGenerator" Version="3.1.2" />
-    <PackageReference Include="docfx.console" Version="2.31.0">
+    <PackageReference Include="docfx.console" Version="2.33.0">
       <ExcludeAssets>build</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
