@@ -8,7 +8,7 @@
     <VersionPrefix>1.0.6</VersionPrefix>
     <VersionSuffix Condition=" '$(GIT_BRANCH)' == 'origin/dev'">build-$(BUILD_NUMBER)</VersionSuffix>
     <Authors>Georg Dangl</Authors>
-    <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.1;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Dangl.Calculator</AssemblyName>
     <PackageId>Dangl.Calculator</PackageId>
