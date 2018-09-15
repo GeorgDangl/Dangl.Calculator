@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Antlr4.Runtime;
-using Dangl.Calculator.Generated;
 
 namespace Dangl.Calculator
 {

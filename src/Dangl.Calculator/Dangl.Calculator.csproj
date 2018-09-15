@@ -25,24 +25,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime" Version="4.6.4" />
-    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5-beta001">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.5" />
+    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Antlr4 Include="Calculator.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Dangl.Calculator.Generated</CustomToolNamespace>
-      <Listener>False</Listener>
-      <Visitor>True</Visitor>
-    </Antlr4>
   </ItemGroup>
 
 </Project>
