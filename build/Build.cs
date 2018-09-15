@@ -1,4 +1,4 @@
-﻿using Nuke.CoberturaConverter;
+using Nuke.CoberturaConverter;
 using Nuke.Common.Git;
 using Nuke.Common.Tools.DocFx;
 using Nuke.Common.Tools.DotCover;
@@ -229,7 +229,7 @@ class Build : NukeBuild
             WebDocu(s => s
                 .SetDocuApiEndpoint(DocuApiEndpoint)
                 .SetDocuApiKey(DocuApiKey)
-                .SetSourceDirectory(OutputDirectory)
+                .SetSourceDirectory(OutputDirectory / "docs")
                 .SetVersion(GitVersion.NuGetVersion)
             );
         });

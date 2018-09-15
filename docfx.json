@@ -49,7 +49,7 @@
       "_enableSearch": true,
       "_gitUrlPattern": "github"
     },
-    "dest": "./output",
+    "dest": "./output/docs",
     "template": [
       "default",
       "docs/template"
