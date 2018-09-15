@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,21 +9,27 @@
     <NoWarn>CS0649;CS0169</NoWarn>
     
     <!-- NUKE CONFIGURATION -->
-    <NukeVersion>0.2.26</NukeVersion>
+    <NukeVersion>0.8.0</NukeVersion>
     <NukeCodeGeneration>False</NukeCodeGeneration>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="1.0.1" />
+    <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="1.2.0" />
+    <PackageReference Include="Nuke.Azure.KeyVault" Version="0.4.2" />
     <PackageReference Include="Nuke.Common" Version="$(NukeVersion)" />
     <PackageReference Include="Nuke.CodeGeneration" Version="$(NukeVersion)" Condition="'$(NukeCodeGeneration)' == 'True'" />
     <PackageReference Include="GitVersion.CommandLine" Version="4.0.0-beta0012" />
-    <PackageReference Include="Nuke.WebDocu" Version="1.0.2" />
-    <PackageReference Include="Nuke.GitHub" Version="1.0.2" />
-    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2018.1.0-eap03" />
+    <PackageReference Include="Nuke.WebDocu" Version="1.2.0" />
+    <PackageReference Include="Nuke.GitHub" Version="1.3.4" />
+    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2018.2.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="ReportGenerator" Version="3.1.2" />
-    <PackageReference Include="docfx.console" Version="2.33.0">
+    <PackageReference Include="docfx.console" Version="2.39.2">
       <ExcludeAssets>build</ExcludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
