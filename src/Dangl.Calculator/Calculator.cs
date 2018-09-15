@@ -6,7 +6,7 @@ namespace Dangl.Calculator
     /// <summary>
     ///     This class provides functionality to calculate a mathematical expression from a string.
     /// </summary>
-    public class Calculator
+    public static class Calculator
     {
         /// <summary>
         ///     This takes a string as input and returns the calculated result as decimal.
