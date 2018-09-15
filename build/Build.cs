@@ -1,32 +1,34 @@
+﻿using Nuke.Azure.KeyVault;
 using Nuke.CoberturaConverter;
+using Nuke.Common;
 using Nuke.Common.Git;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DocFx;
 using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
-using Nuke.Common;
-using Nuke.Common.Tooling;
 using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
 using Nuke.GitHub;
 using Nuke.WebDocu;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using static Nuke.CoberturaConverter.CoberturaConverterTasks;
 using static Nuke.Common.ChangeLog.ChangelogTasks;
+using static Nuke.Common.EnvironmentInfo;
+using static Nuke.Common.IO.FileSystemTasks;
+using static Nuke.Common.IO.PathConstruction;
+using static Nuke.Common.IO.XmlTasks;
 using static Nuke.Common.Tools.DocFx.DocFxTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
-using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
-using static Nuke.Common.Tooling.ProcessTasks;
 using static Nuke.GitHub.ChangeLogExtensions;
 using static Nuke.GitHub.GitHubTasks;
 using static Nuke.WebDocu.WebDocuTasks;
@@ -34,26 +36,35 @@ using static Nuke.WebDocu.WebDocuTasks;
 class Build : NukeBuild
 {
     // Console application entry. Also defines the default target.
-    public static int Main () => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Compile);
 
-    // Auto-injection fields:
+    [KeyVaultSettings(
+        BaseUrlParameterName = nameof(KeyVaultBaseUrl),
+        ClientIdParameterName = nameof(KeyVaultClientId),
+        ClientSecretParameterName = nameof(KeyVaultClientSecret))]
+    readonly KeyVaultSettings KeyVaultSettings;
+
+    [KeyVault] readonly KeyVault KeyVault;
+
+    [Parameter] readonly string KeyVaultBaseUrl;
+    [Parameter] readonly string KeyVaultClientId;
+    [Parameter] readonly string KeyVaultClientSecret;
 
     [GitVersion] readonly GitVersion GitVersion;
-    // Semantic versioning. Must have 'GitVersion.CommandLine' referenced.
-
     [GitRepository] readonly GitRepository GitRepository;
-    // Parses origin, branch name and head from git config.
 
-    [Parameter] string MyGetSource;
-    [Parameter] string MyGetApiKey;
-    [Parameter] string DocuApiKey;
-    [Parameter] string DocuApiEndpoint;
-    [Parameter] string GitHubAuthenticationToken;
+    [KeyVaultSecret] readonly string DocuApiEndpoint;
+    [KeyVaultSecret] readonly string PublicMyGetSource;
+    [KeyVaultSecret] readonly string PublicMyGetApiKey;
+    [KeyVaultSecret] readonly string NuGetApiKey;
+    [KeyVaultSecret("DanglCalculator-DocuApiKey")] readonly string DocuApiKey;
+    [KeyVaultSecret] readonly string GitHubAuthenticationToken;
 
     string DocFxFile => SolutionDirectory / "docfx.json";
 
     // This is used to to infer which dotnet sdk version to use when generating DocFX metadata
-    string DocFxDotNetSdkVersion = "2.1.4";
+    readonly string DocFxDotNetSdkVersion = "2.1.4";
+
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
 
     Target Clean => _ => _
@@ -99,17 +110,20 @@ class Build : NukeBuild
             foreach (var testProject in testProjects)
             {
                 var projectDirectory = Path.GetDirectoryName(testProject);
-                string testFile = OutputDirectory / $"test_{testRun++}.testresults";
-                // This is so that the global dotnet is used instead of the one that comes with NUKE
-                var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
 
-                StartProcess(dotnetPath, "xunit " +
-                                         "-nobuild " +
-                                         $"-xml {testFile.DoubleQuoteIfNeeded()}",
-                        workingDirectory: projectDirectory)
-                    // AssertWairForExit() instead of AssertZeroExitCode()
-                    // because we want to continue all tests even if some fail
-                    .AssertWaitForExit();
+                foreach (var targetFramework in GetTestFrameworksForProjectFile(testProject))
+                {
+                    var dotnetXunitSettings = new ToolSettings()
+                        .SetWorkingDirectory(projectDirectory)
+                        .SetToolPath(ToolPathResolver.GetPathExecutable("dotnet"))
+                        .SetArgumentConfigurator(c => c.Add("test")
+                            .Add("--no-build")
+                            .Add("-f {value}", targetFramework)
+                            .Add("--test-adapter-path:.")
+                            .Add("--logger:xunit;LogFilePath={value}", "\"" + OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml" + "\""));
+                    ProcessTasks.StartProcess(dotnetXunitSettings)
+                        .AssertWaitForExit();
+                }
             }
 
             PrependFrameworkToTestresults();
@@ -117,7 +131,7 @@ class Build : NukeBuild
 
     Target Coverage => _ => _
         .DependsOn(Compile)
-        .Executes(() =>
+        .Executes(async () =>
         {
             var testProjects = GlobFiles(SolutionDirectory / "test", "*.csproj").ToList();
             for (var i = 0; i < testProjects.Count; i++)
@@ -129,14 +143,19 @@ class Build : NukeBuild
                 var snapshotIndex = i;
 
                 string xUnitOutputDirectory = OutputDirectory / $"test_{snapshotIndex:00}.testresults";
-                DotCoverCover(c => c
-                    .SetTargetExecutable(dotnetPath)
-                    .SetTargetWorkingDirectory(projectDirectory)
-                    .SetTargetArguments($"xunit -nobuild -xml {xUnitOutputDirectory.DoubleQuoteIfNeeded()}")
-                    .SetFilters("+:Dangl.Calculator")
-                    .SetAttributeFilters("System.CodeDom.Compiler.GeneratedCodeAttribute")
-                    .SetOutputFile(OutputDirectory / $"coverage{snapshotIndex:00}.snapshot"));
+                foreach (var targetFramework in GetTestFrameworksForProjectFile(testProject))
+                {
+                    DotCoverCover(c => c
+                        .SetTargetExecutable(dotnetPath)
+                        .SetTargetWorkingDirectory(projectDirectory)
+                        .SetTargetArguments($"test --no-build -f {targetFramework} --test-adapter-path:. \"--logger:xunit;LogFilePath={OutputDirectory}/{snapshotIndex}_testresults-{targetFramework}.xml\"")
+                        .SetFilters("+:Dangl.Calculator")
+                        .SetAttributeFilters("System.CodeDom.Compiler.GeneratedCodeAttribute")
+                        .SetOutputFile(OutputDirectory / $"coverage{snapshotIndex:00}.snapshot"));
+                }
             }
+
+            PrependFrameworkToTestresults();
 
             var snapshots = testProjects.Select((t, i) => OutputDirectory / $"coverage{i:00}.snapshot")
                 .Select(p => p.ToString())
@@ -159,18 +178,25 @@ class Build : NukeBuild
             // This is the report in Cobertura format that integrates so nice in Jenkins
             // dashboard and allows to extract more metrics and set build health based
             // on coverage readings
-            DotCoverToCobertura(s => s
+            await DotCoverToCobertura(s => s
                     .SetInputFile(OutputDirectory / "coverage.xml")
-                    .SetOutputFile(OutputDirectory / "cobertura_coverage.xml"))
-                .ConfigureAwait(false)
-                .GetAwaiter()
-                .GetResult();
+                    .SetOutputFile(OutputDirectory / "cobertura_coverage.xml"));
         });
+
+    IEnumerable<string> GetTestFrameworksForProjectFile(string projectFile)
+    {
+        var targetFrameworks = XmlPeek(projectFile, "//Project/PropertyGroup//TargetFrameworks")
+            .Concat(XmlPeek(projectFile, "//Project/PropertyGroup//TargetFramework"))
+            .Distinct()
+            .SelectMany(f => f.Split(';'));
+        return targetFrameworks;
+    }
 
     Target Push => _ => _
         .DependsOn(Pack)
-        .Requires(() => MyGetSource)
-        .Requires(() => MyGetApiKey)
+        .Requires(() => PublicMyGetSource)
+        .Requires(() => PublicMyGetApiKey)
+        .Requires(() => NuGetApiKey)
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
         {
@@ -180,8 +206,17 @@ class Build : NukeBuild
                 {
                     DotNetNuGetPush(s => s
                         .SetTargetPath(x)
-                        .SetSource(MyGetSource)
-                        .SetApiKey(MyGetApiKey));
+                        .SetSource(PublicMyGetSource)
+                        .SetApiKey(PublicMyGetApiKey));
+
+                    if (GitVersion.BranchName.Equals("master") || GitVersion.BranchName.Equals("origin/master"))
+                    {
+                        // Stable releases are published to NuGet
+                        DotNetNuGetPush(s => s
+                            .SetTargetPath(x)
+                            .SetSource("https://api.nuget.org/v3/index.json")
+                            .SetApiKey(NuGetApiKey));
+                    }
                 });
         });
 
@@ -194,7 +229,7 @@ class Build : NukeBuild
             var dotnetPath = Path.GetDirectoryName(ToolPathResolver.GetPathExecutable("dotnet.exe"));
             var msBuildPath = Path.Combine(dotnetPath, "sdk", DocFxDotNetSdkVersion, "MSBuild.dll");
             SetVariable("MSBUILD_EXE_PATH", msBuildPath);
-            DocFxMetadata(DocFxFile, s => s.SetLogLevel(DocFxLogLevel.Verbose));
+            DocFxMetadata(DocFxFile, s => s.SetLogLevel(DocFxLogLevel.Info));
         });
 
     Target BuildDocumentation => _ => _
@@ -212,7 +247,7 @@ class Build : NukeBuild
 
             DocFxBuild(DocFxFile, s => s
                 .ClearXRefMaps()
-                .SetLogLevel(DocFxLogLevel.Verbose));
+                .SetLogLevel(DocFxLogLevel.Info));
 
             File.Delete(SolutionDirectory / "index.md");
             Directory.Delete(SolutionDirectory / "api", true);
@@ -262,7 +297,7 @@ class Build : NukeBuild
 
     void PrependFrameworkToTestresults()
     {
-        var testResults = GlobFiles(OutputDirectory, "*.testresults");
+        var testResults = GlobFiles(OutputDirectory, "*testresults*.xml");
         foreach (var testResultFile in testResults)
         {
             var frameworkName = GetFrameworkNameFromFilename(testResultFile);
@@ -285,7 +320,7 @@ class Build : NukeBuild
     string GetFrameworkNameFromFilename(string filename)
     {
         var name = Path.GetFileName(filename);
-        name = name.Substring(0, name.Length - ".testresults".Length);
+        name = name.Substring(0, name.Length - ".xml".Length);
         var startIndex = name.LastIndexOf('-');
         name = name.Substring(startIndex + 1);
         return name;
