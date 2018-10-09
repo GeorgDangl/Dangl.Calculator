@@ -43,7 +43,9 @@ grammar Calculator;
 calculator : expression compileUnit;
 
 // Possible expression types
-expression	:	FLOOR  expression 									#Floor			//	Round down to zero accuracy
+expression	:	'-' expression										#Unary			//	Unary minus sign (negative numbers)
+			|	'+' expression										#UnaryPlus		//	Unary plus sign (positive numbers)
+			|   FLOOR  expression 									#Floor			//	Round down to zero accuracy
 			|	CEIL  expression 									#Ceil			//	Round up to zero accuracy
 			|	ABS  expression 									#Abs			//	Absolute value
 			|	ROUNDK '(' expression ';' expression ')'			#Roundk			//	Round expr_1 with expr_2 accuracy
@@ -81,8 +83,6 @@ expression	:	FLOOR  expression 									#Floor			//	Round down to zero accuracy
 			|	expression EXPONENT expression						#Exponent		//  Exponent, e.g. 10e+43
 			|	expression NEGEXPONENT expression					#NegExponent	//  Inverted Exponent, e.g. 10e-43
 			|	EULER												#Euler			//	Mathematical constant e = 2,718282
-			|	'-' expression										#Unary			//	Unary minus sign (negative numbers)
-			|	'+' expression										#UnaryPlus		//	Unary plus sign (positive numbers)
 			;
 
 // End of file
