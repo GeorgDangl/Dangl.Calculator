@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.1.2
+- Bugfix: Fixed operator precedence for exponential expression, e.g. `1e+2*2 == 200`
+
 ## v1.1.1
 - Bugfix: Unary minus signs were not always evaluated to the nearest matching expression, e.g. `-3+5` was evaluated as `-(3+5)`. See [GitHub Issue #1](https://github.com/GeorgDangl/Dangl.Calculator/issues/1)
 

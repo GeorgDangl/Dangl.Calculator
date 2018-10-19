@@ -3,7 +3,7 @@
 // *  Last change: 2016-09-18			*
 // *  Grammar for calculating			*
 // *  formulas.							*
-// *  © 2015 Georg Dangl				*
+// *  ï¿½ 2015 Georg Dangl				*
 // *  info@georgdangl.de				*
 // *									*
 // **************************************	
@@ -67,10 +67,12 @@ expression	:	'-' expression										#Unary			//	Unary minus sign (negative numb
 			|	LN  expression 										#Ln				//	Logarithm to e
 			|	EEX  expression 									#Eex			//	10 ^ expr
 			|	LOG  expression 									#Log			//	Logarithm to 10
-			|	RAD  expression 									#Rad			//	Angle to radians (360° base)
-			|	DEG  expression 									#Deg			//	Radians to angle (360° base)
+			|	RAD  expression 									#Rad			//	Angle to radians (360ï¿½ base)
+			|	DEG  expression 									#Deg			//	Radians to angle (360ï¿½ base)
 			|	SQRT expression 									#Sqrt			//	Square root
 			|	SQR expression 										#Sqr			//	Square product
+			|	expression EXPONENT expression						#Exponent		//  Exponent, e.g. 10e+43
+			|	expression NEGEXPONENT expression					#NegExponent	//  Inverted Exponent, e.g. 10e-43
 			|	expression op = ('^'|'**') expression				#Pow			//	expr_1 to the expr_2 th power
 			|	expression (MOD | '%' ) expression					#Mod			//	Modulo
 			|	expression WHOLE expression							#Whole			//	Whole part of division rest
@@ -80,8 +82,6 @@ expression	:	'-' expression										#Unary			//	Unary minus sign (negative numb
 			|	NUMBER												#Number			//	Single integer or float number
 			|	'(' expression ')'									#Parenthesis	//	Expression within parentheses
 			|	PI '()'?											#Pi				//	Mathematical constant pi = 3,141593
-			|	expression EXPONENT expression						#Exponent		//  Exponent, e.g. 10e+43
-			|	expression NEGEXPONENT expression					#NegExponent	//  Inverted Exponent, e.g. 10e-43
 			|	EULER												#Euler			//	Mathematical constant e = 2,718282
 			;
 
