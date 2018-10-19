@@ -1,6 +1,5 @@
 // **************************************
 // *									*
-// *  Last change: 2016-09-18			*
 // *  Grammar for calculating			*
 // *  formulas.							*
 // *  � 2015 Georg Dangl				*
