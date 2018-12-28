@@ -2,6 +2,10 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.1.3:
+- Dropped tests for `netcoreapp2.0`, added tests for `netcoreapp2.2`
+- Update of dependencies
+
 ## v1.1.2
 - Bugfix: Fixed operator precedence for exponential expression, e.g. `1e+2*2 == 200`
 
