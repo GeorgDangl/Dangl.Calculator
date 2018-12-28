@@ -51,12 +51,7 @@ class Build : NukeBuild
     [Parameter] readonly string KeyVaultClientId;
     [Parameter] readonly string KeyVaultClientSecret;
 
-    private string _configuration;
-    [Parameter] string Configuration
-    {
-        get => _configuration ?? (Host == HostType.Console ? "Debug" : "Release"); // Defaults to "Release" in CI server;
-        set => _configuration = value;
-    }
+    [Parameter] readonly string Configuration = IsLocalBuild ? "Debug" : "Release";
 
     [GitVersion] readonly GitVersion GitVersion;
     [GitRepository] readonly GitRepository GitRepository;
