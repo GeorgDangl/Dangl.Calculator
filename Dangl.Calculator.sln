@@ -14,7 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		GitVersion.yml = GitVersion.yml
 		LICENCE.md = LICENCE.md
 		README.md = README.md
-		TestsAndCoverage.ps1 = TestsAndCoverage.ps1
 		toc.yml = toc.yml
 	EndProjectSection
 EndProject
