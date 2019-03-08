@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Antlr4.Runtime.Misc;
+using System;
 using System.Globalization;
-using Antlr4.Runtime.Misc;
 
 namespace Dangl.Calculator
 {

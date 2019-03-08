@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;net47;net461;net46;net452</TargetFrameworks>
+    <!-- When inside VS, only the latest netcoreapp2.2 target is built, both for performance and for live unit testing -->
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">netcoreapp2.2;netcoreapp2.1;net461;net46;net47;net452</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">netcoreapp2.2</TargetFrameworks>
     <AssemblyName>Dangl.Calculator.Tests</AssemblyName>
     <PackageId>Dangl.Calculator.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -36,13 +38,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="XunitXml.TestLogger" Version="2.0.0" />
+    <PackageReference Include="XunitXml.TestLogger" Version="2.1.26" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

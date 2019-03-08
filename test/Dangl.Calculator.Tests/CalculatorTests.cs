@@ -17,6 +17,42 @@ namespace Dangl.Calculator.Tests
             }
 
             [Fact]
+            public void IgnoreEqualsSignAtEnd_01()
+            {
+                RunTest("5=", 5);
+            }
+
+            [Fact]
+            public void IgnoreEqualsSignAtEnd_02()
+            {
+                RunTest("5+5=", 10);
+            }
+
+            [Fact]
+            public void IgnoreEqualsSignAtEnd_03()
+            {
+                RunTest("5 + 5=", 10);
+            }
+
+            [Fact]
+            public void IgnoreEqualsSignAtEnd_04()
+            {
+                RunTest("5+5 =", 10);
+            }
+
+            [Fact]
+            public void IgnoreEqualsSignAtEnd_05()
+            {
+                RunTest("5+5= ", 10);
+            }
+
+            [Fact]
+            public void IgnoreEqualsSignAtEnd_06()
+            {
+                RunTest("5+5   =  ", 10);
+            }
+
+            [Fact]
             public void Floor_Without_Parentheses()
             {
                 RunTest("floor3.4", 3);

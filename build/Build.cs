@@ -56,7 +56,7 @@ class Build : NukeBuild
     [GitVersion] readonly GitVersion GitVersion;
     [GitRepository] readonly GitRepository GitRepository;
 
-    [KeyVaultSecret] readonly string DocuApiEndpoint;
+    [KeyVaultSecret] readonly string DocuBaseUrl;
     [KeyVaultSecret] readonly string PublicMyGetSource;
     [KeyVaultSecret] readonly string PublicMyGetApiKey;
     [KeyVaultSecret] readonly string NuGetApiKey;
@@ -69,9 +69,6 @@ class Build : NukeBuild
     AbsolutePath SourceDirectory => SolutionDirectory / "src";
 
     string DocFxFile => SolutionDirectory / "docfx.json";
-
-    // This is used to to infer which dotnet sdk version to use when generating DocFX metadata
-    readonly string DocFxDotNetSdkVersion = "2.1.4";
 
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
 
@@ -205,7 +202,8 @@ class Build : NukeBuild
         var targetFrameworks = XmlPeek(projectFile, "//Project/PropertyGroup//TargetFrameworks")
             .Concat(XmlPeek(projectFile, "//Project/PropertyGroup//TargetFramework"))
             .Distinct()
-            .SelectMany(f => f.Split(';'));
+            .SelectMany(f => f.Split(';'))
+            .Distinct();
         return targetFrameworks;
     }
 
@@ -241,11 +239,6 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            // So it uses a fixed, known version of MsBuild to generate the metadata. Otherwise,
-            // updates of dotnet or Visual Studio could introduce incompatibilities and generation failures
-            var dotnetPath = Path.GetDirectoryName(ToolPathResolver.GetPathExecutable("dotnet.exe"));
-            var msBuildPath = Path.Combine(dotnetPath, "sdk", DocFxDotNetSdkVersion, "MSBuild.dll");
-            SetVariable("MSBUILD_EXE_PATH", msBuildPath);
             DocFXMetadata(x => x.SetProjects(DocFxFile));
         });
 
@@ -273,11 +266,11 @@ class Build : NukeBuild
         .DependsOn(Push) // To have a relation between pushed package version and published docs version
         .DependsOn(BuildDocumentation)
         .Requires(() => DocuApiKey)
-        .Requires(() => DocuApiEndpoint)
+        .Requires(() => DocuBaseUrl)
         .Executes(() =>
         {
             WebDocu(s => s
-                .SetDocuApiEndpoint(DocuApiEndpoint)
+                .SetDocuBaseUrl(DocuBaseUrl)
                 .SetDocuApiKey(DocuApiKey)
                 .SetSourceDirectory(OutputDirectory / "docs")
                 .SetVersion(GitVersion.NuGetVersion)

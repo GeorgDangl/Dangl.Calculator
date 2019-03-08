@@ -39,7 +39,7 @@ grammar Calculator;
  */
 
 // Main entry for the calculator
-calculator : expression compileUnit;
+calculator : expression '='? compileUnit;
 
 // Possible expression types
 expression	:	'-' expression										#Unary			//	Unary minus sign (negative numbers)

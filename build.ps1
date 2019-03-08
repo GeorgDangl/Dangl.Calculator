@@ -22,8 +22,7 @@ $DotNetInstallUrl = "https://raw.githubusercontent.com/dotnet/cli/master/scripts
 $DotNetReleasesUrl = "https://raw.githubusercontent.com/dotnet/core/master/release-notes/releases.json"
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
-$env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
-$env:NUGET_XMLDOC_MODE = "skip"
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
 
 ###########################################################################
 # EXECUTION

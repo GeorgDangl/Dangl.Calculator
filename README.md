@@ -116,6 +116,8 @@ _expression_ may be any expression as functions can be nested. Example: `DEG(2*P
 
 Formulas can be case invariant, e.g. `SIN`, `sin` and `siN` are all considered the same.
 
+An optional equals sign `=` at the end of the function is allowed.
+
 ## Comments in Formulas
 
 Comments in Formulas are supported by encapsulating them either in `/*...*/`, `'...'` or `"..."` quote styles. Examples:
