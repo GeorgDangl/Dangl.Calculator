@@ -202,7 +202,8 @@ class Build : NukeBuild
         var targetFrameworks = XmlPeek(projectFile, "//Project/PropertyGroup//TargetFrameworks")
             .Concat(XmlPeek(projectFile, "//Project/PropertyGroup//TargetFramework"))
             .Distinct()
-            .SelectMany(f => f.Split(';'));
+            .SelectMany(f => f.Split(';'))
+            .Distinct();
         return targetFrameworks;
     }
 

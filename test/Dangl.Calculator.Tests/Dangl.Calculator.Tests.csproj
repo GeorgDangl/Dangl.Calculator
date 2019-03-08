@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;net47;net461;net46;net452</TargetFrameworks>
+    <!-- When inside VS, only the latest netcoreapp2.2 target is built, both for performance and for live unit testing -->
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">netcoreapp2.2;netcoreapp2.1;net461;net46;net47;net452</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">netcoreapp2.2</TargetFrameworks>
     <AssemblyName>Dangl.Calculator.Tests</AssemblyName>
     <PackageId>Dangl.Calculator.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
