@@ -122,6 +122,11 @@ namespace Dangl.Calculator
             return Visit(context.expression(0)) / Visit(context.expression(1));
         }
 
+        public override double VisitMult([NotNull] CalculatorParser.MultContext context)
+        {
+            return Visit(context.expression(0)) * Visit(context.expression(1));
+        }
+
         public override double VisitNegExponent(CalculatorParser.NegExponentContext context)
         {
             return Visit(context.expression(0)) * Math.Pow(10, -Visit(context.expression(1)));

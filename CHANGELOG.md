@@ -4,6 +4,7 @@ All notable changes to **Dangl.Calculator** are documented here.
 
 ## v1.1.5:
 - CI tests are now also run on Linux
+- Added capability to detect missing multiplication signs, e.g. the formula `3pi` is now recognized as `3*pi` or `2(3)` as `2*(3)`
 
 ## v1.1.4:
 - Added support for formulas ending with an equals sign `=`
