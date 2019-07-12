@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.1.5:
+- CI tests are now also run on Linux
+
 ## v1.1.4:
 - Added support for formulas ending with an equals sign `=`
 
