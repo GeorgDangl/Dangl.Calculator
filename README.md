@@ -111,6 +111,8 @@ public void Example()
 `EULER`                                    | Mathematical constant e = 2,718282    |
 `'-' expression`                           | Unary minus sign (negative numbers)   |
 `'+' expression`                           | Unary plus sign (positive numbers)    |
+`'(' expression ')' expression`               | Expressions without multiplication sign, e.g. `2(3)` -> `2*(3)` |
+`expression '(' expression ')'`              | Expressions without multiplication sign, e.g. `2(3)` -> `2*(3)` |
 
 _expression_ may be any expression as functions can be nested. Example: `DEG(2*PI)` or `LOG(10^3)`.
 
