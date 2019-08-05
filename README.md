@@ -130,6 +130,14 @@ Comments in Formulas are supported by encapsulating them either in `/*...*/`, `'
 
 `4"Length"*3"Width"` resolves to `12`
 
+## Assembly Strong Naming & Usage in Signed Applications
+
+This module produces strong named assemblies when compiled. When consumers of this package require strongly named assemblies, for example when they
+themselves are signed, the outputs should work as-is.
+The key file to create the strong name is adjacent to the `csproj` file in the root of the source project. Please note that this does not increase
+security or provide tamper-proof binaries, as the key is available in the source code per 
+[Microsoft guidelines](https://msdn.microsoft.com/en-us/library/wd40t7ad(v=vs.110).aspx)
+
 ---
 
 [MIT Licence](Licence.md)

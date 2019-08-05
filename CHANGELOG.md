@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.2.0
+- The generated assemblies now have a strong name. This is a breaking change of the binary API and will require recompilation on all systems that consume this package. The strong name of the generated assembly allows compatibility with other, signed tools. Please note that this does not increase security or provide tamper-proof binaries, as the key is available in the source code per [Microsoft guidelines](https://msdn.microsoft.com/en-us/library/wd40t7ad(v=vs.110).aspx)
+
 ## v1.1.5:
 - CI tests are now also run on Linux
 - Added capability to detect missing multiplication signs, e.g. the formula `3pi` is now recognized as `3*pi` or `2(3)` as `2*(3)`
