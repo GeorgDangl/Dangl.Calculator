@@ -1,9 +1,8 @@
-﻿using Nuke.Azure.KeyVault;
-using Nuke.CoberturaConverter;
+﻿using Nuke.CoberturaConverter;
 using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.Tooling;
-using Nuke.DocFX;
+using Nuke.Common.Tools.DocFX;
 using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
@@ -25,7 +24,7 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.IO.XmlTasks;
-using static Nuke.DocFX.DocFXTasks;
+using static Nuke.Common.Tools.DocFX.DocFXTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
@@ -33,6 +32,9 @@ using static Nuke.GitHub.ChangeLogExtensions;
 using static Nuke.GitHub.GitHubTasks;
 using static Nuke.WebDocu.WebDocuTasks;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tools.AzureKeyVault.Attributes;
+using Nuke.Common.Tools.AzureKeyVault;
+using Nuke.Common.IO;
 
 class Build : NukeBuild
 {
@@ -53,7 +55,7 @@ class Build : NukeBuild
 
     [Parameter] readonly string Configuration = IsLocalBuild ? "Debug" : "Release";
 
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "netcoreapp3.1")] readonly GitVersion GitVersion;
     [GitRepository] readonly GitRepository GitRepository;
 
     [KeyVaultSecret] readonly string DocuBaseUrl;
@@ -94,7 +96,7 @@ class Build : NukeBuild
                 DotNetBuild(x => x
                     .SetConfiguration(Configuration)
                     .EnableNoRestore()
-                    .SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                    .SetFileVersion(GitVersion.AssemblySemFileVer)
                     .SetAssemblyVersion(GitVersion.AssemblySemVer)
                     .SetInformationalVersion(GitVersion.InformationalVersion));
             });
@@ -131,7 +133,7 @@ class Build : NukeBuild
                          .SelectMany(testProject => GetTestFrameworksForProjectFile(testProject)
                              .Select(targetFramework => cc
                                  .SetFramework(targetFramework)
-                                 .SetWorkingDirectory(Path.GetDirectoryName(testProject))
+                                 .SetProcessWorkingDirectory(Path.GetDirectoryName(testProject))
                                  .SetLogger($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
                                  degreeOfParallelism: Environment.ProcessorCount);
              }
@@ -148,15 +150,15 @@ class Build : NukeBuild
             try
             {
                 DotNetTest(x => x
-                   .SetWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
+                   .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
                    .SetTestAdapterPath(".")
-                   .SetFramework("netcoreapp2.2")
+                   .SetFramework("netcoreapp3.1")
                    .SetLogger($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
                    // There's a bug where the 'dotnet test' process hangs for 15 minutes after
                    // test completion
-                   .SetArgumentConfigurator(ac => ac.Add("-nodereuse:false")));
+                   .SetProcessArgumentConfigurator(ac => ac.Add("-nodereuse:false")));
             }
             finally
             {
@@ -211,6 +213,7 @@ class Build : NukeBuild
 
             // This is the report that's pretty and visualized in Jenkins
             ReportGenerator(c => c
+                .SetFramework("netcoreapp3.0")
                 .SetReports(OutputDirectory / "coverage.xml")
                 .SetTargetDirectory(OutputDirectory / "CoverageReport"));
 
