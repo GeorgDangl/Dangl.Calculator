@@ -1,6 +1,6 @@
 # Dangl.Calculator
 
-[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=Dangl.Calculator/dev)](https://jenkins.dangl.me/job/Dangl.Calculator/job/dev/)
+[![Build Status](https://jenkins.dangl.me/buildStatus/icon?job=GeorgDangl%2FDangl.Calculator%2Fdev)](https://jenkins.dangl.me/job/GeorgDangl/job/Dangl.Calculator/job/dev/)
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Calculator.svg)](https://www.nuget.org/packages/Dangl.Calculator)
 [![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Calculator.svg)]()
 
@@ -31,8 +31,9 @@ CI builds are available via MyGet.
 
 ## Compatibility
 
-This project targets `netstandard2.0`, `netstandard1.1` and `net45`. Due to .Net 4.5.2 being the currently latest supported version
-by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.
+This project targets `netstandard2.0`, `netstandard1.1`, `net45` and `net40`. Due to .Net 4.5.2 being the currently latest supported version
+by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.  
+The .NET 4.0 target is for compatibility reasons, it is not tested and requires .NET compilers for version 4.5 or newer to properly function.
 
 ## Project Configuration
 
