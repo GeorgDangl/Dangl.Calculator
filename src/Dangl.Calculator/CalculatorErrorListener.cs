@@ -59,5 +59,18 @@ namespace Dangl.Calculator
             ErrorLocation = ErrorLocation == -1 ? charPositionInLine : ErrorLocation;
             ErrorMessage = msg;
         }
+
+        /// <summary>
+        /// Sets <see cref="IsValid"/> to false and <see cref="ErrorLocation"/> to the value provided by the caller. The <see cref="ErrorMessage"/> will be set
+        /// to indicate which substitution value was not found.
+        /// </summary>
+        /// <param name="errorLocation"></param>
+        /// <param name="substitution"></param>
+        public void ReportSubstitutionNotFound(int errorLocation, string substitution)
+        {
+            IsValid = false;
+            ErrorLocation = errorLocation;
+            ErrorMessage = $"The substitution '{substitution}' could not be resolved";
+        }
     }
 }

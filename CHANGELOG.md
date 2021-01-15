@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.3.0:
+- Add support for substitutions in formulas
+
 ## v1.2.1:
 - Add `net40` as target framework
 - Drop tests for `netcoreapp2.2` and add tests for `netcoreapp3.1`

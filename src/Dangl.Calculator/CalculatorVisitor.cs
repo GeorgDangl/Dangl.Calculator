@@ -9,6 +9,31 @@ namespace Dangl.Calculator
     /// </summary>
     internal class CalculatorVisitor : CalculatorBaseVisitor<double>
     {
+        private readonly Func<string, double?> _substitutionResolver;
+        private readonly CalculatorErrorListener _calculatorErrorListener;
+
+        public CalculatorVisitor(Func<string, double?> substitutionResolver,
+            CalculatorErrorListener calculatorErrorListener)
+        {
+            _substitutionResolver = substitutionResolver;
+            _calculatorErrorListener = calculatorErrorListener;
+        }
+
+        public override double VisitSubstitution([NotNull] CalculatorParser.SubstitutionContext context)
+        {
+            var substitution = context.GetText();
+            var resolved = _substitutionResolver(substitution);
+            if (resolved != null)
+            {
+                return resolved.Value;
+            }
+
+            _calculatorErrorListener
+                .ReportSubstitutionNotFound(context.Start.TokenIndex, substitution);
+
+            return 0;
+        }
+
         public override double VisitAbs(CalculatorParser.AbsContext context)
         {
             return Math.Abs(Visit(context.expression()));

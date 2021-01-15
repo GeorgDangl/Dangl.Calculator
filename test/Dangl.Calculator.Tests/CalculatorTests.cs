@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Dangl.Calculator.Tests
 {
-    public class CalculatorTests
+    public static class CalculatorTests
     {
         public class CorrectFormulas
         {
@@ -1186,6 +1186,95 @@ namespace Dangl.Calculator.Tests
                 var result = Calculator.Calculate(formula);
                 Assert.Equal(double.PositiveInfinity, result.Result);
                 Assert.False(result.IsValid);
+            }
+        }
+
+        public class Substitutions
+        {
+            [Fact]
+            public void ErrorWhenSubstitutionCanNotBeResolved_NoneGiven()
+            {
+                var formula = "1+#1";
+                var result = Calculator.Calculate(formula);
+
+                Assert.False(result.IsValid);
+                Assert.Equal(double.NaN, result.Result);
+                Assert.Equal(2, result.ErrorPosition);
+                Assert.Contains("#1", result.ErrorMessage);
+            }
+
+            [Fact]
+            public void ErrorWhenSubstitutionCanNotBeResolved_ReturnsNull()
+            {
+                var formula = "1+#1";
+                var result = Calculator.Calculate(formula, _ => null);
+
+                Assert.False(result.IsValid);
+                Assert.Equal(double.NaN, result.Result);
+                Assert.Equal(2, result.ErrorPosition);
+                Assert.Contains("#1", result.ErrorMessage);
+            }
+
+            [Fact]
+            public void CanCalculateSubstitution()
+            {
+                var formula = "1+#Z";
+                var result = Calculator.Calculate(formula, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(4, result.Result);
+            }
+            [Fact]
+            public void CanCalculateSubstitution_02()
+            {
+                var formula = "1+#Z4+4";
+                var result = Calculator.Calculate(formula, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(8, result.Result);
+            }
+
+            [Fact]
+            public void CanCalculateMultipleSubstitutions()
+            {
+                var formula = "#first + #second * #third";
+                var result = Calculator.Calculate(formula, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(12, result.Result);
+            }
+
+            [Fact]
+            public void CanSubstituteCustomValues()
+            {
+                var formula = "#first + #second * #third";
+                var result = Calculator.Calculate(formula, substitution =>
+                {
+                    switch (substitution)
+                    {
+                        case "#first":
+                            return 2;
+                        case "#second":
+                            return 3;
+                        case "#third":
+                            return 4;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                });
+
+                Assert.True(result.IsValid);
+                Assert.Equal(14, result.Result);
+            }
+
+            [Fact]
+            public void CanSubstituteComplex()
+            {
+                var formula = "log10*pi/#12d*e";
+                var result = Calculator.Calculate(formula, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(2.846578, result.Result, 5);
             }
         }
     }

@@ -131,6 +131,31 @@ Comments in Formulas are supported by encapsulating them either in `/*...*/`, `'
 
 `4"Length"*3"Width"` resolves to `12`
 
+## Substitutions
+
+The calculator can be called with an overload that accepts a callback function for substitution values. For example, take the following formula:  
+`1,2*#Z4+3`  
+Here, `#Z4` is a _substitution_, which is a placeholder that can be externally supplied. Let's say you want to resolve `Z#4` to the value three, you could
+make this simple call:
+
+```csharp
+var formula = "1,2*#Z4+3";
+var result = Calculator.Calculate(formula, substitution =>
+{
+    if (substitution == "#Z4")
+    {
+        return 3;
+    }
+
+    return null;
+});
+```
+
+The callback is in the form of a `Func<string, decimal?>`, and it will be called for every substitution found in the formula. Multiple substitutions are supported.
+If duplicates in substitutions are present, the calculator will request each one individually. If a substitution resolves to `null`, the formula is considered invalid.
+
+Substitutions must always start with the `#` character and can then have the following characters: `[a-z] | [A-Z] | [äÄöÖüÜ] | [0-9]`
+
 ## Assembly Strong Naming & Usage in Signed Applications
 
 This module produces strong named assemblies when compiled. When consumers of this package require strongly named assemblies, for example when they

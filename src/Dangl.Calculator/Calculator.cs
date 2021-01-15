@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using System;
 using System.Linq;
 
 namespace Dangl.Calculator
@@ -14,7 +15,20 @@ namespace Dangl.Calculator
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         public static CalculationResult Calculate(string formula)
         {
-            return CalculateResult(formula, false);
+            return CalculateResult(formula, false, _ => null);
+        }
+
+        /// <summary>
+        ///     This takes a string as input and returns the calculated result as decimal.
+        /// </summary>
+        /// <param name="formula">The mathematical expression as string to be calculated.</param>
+        /// <param name="substitutionResolver">
+        ///     This callback may be used to resolve substitutions. If a null value is returned
+        ///     by this callback, the formula is considered invalid.
+        /// </param>
+        public static CalculationResult Calculate(string formula, Func<string, double?> substitutionResolver)
+        {
+            return CalculateResult(formula, false, substitutionResolver);
         }
 
         /// <summary>
@@ -23,8 +37,12 @@ namespace Dangl.Calculator
         /// </summary>
         /// <param name="formula"></param>
         /// <param name="secondRun"></param>
+        /// <param name="substitutionResolver">
+        ///     This callback may be used to resolve substitutions. If a null value is returned
+        ///     by this callback, the formula is considered invalid.
+        /// </param>
         /// <returns></returns>
-        private static CalculationResult CalculateResult(string formula, bool secondRun)
+        private static CalculationResult CalculateResult(string formula, bool secondRun, Func<string, double?> substitutionResolver)
         {
             if (string.IsNullOrWhiteSpace(formula))
             {
@@ -45,7 +63,7 @@ namespace Dangl.Calculator
             // But adding the custom one
             var customErrorListener = new CalculatorErrorListener();
             parser.AddErrorListener(customErrorListener);
-            var visitor = new CalculatorVisitor();
+            var visitor = new CalculatorVisitor(substitutionResolver, customErrorListener);
             var calculatorExpression = parser.calculator().expression();
             var result = visitor.Visit(calculatorExpression);
             var isValid = customErrorListener.IsValid;
@@ -65,7 +83,7 @@ namespace Dangl.Calculator
                     cleanedFormula += tokenList[i].Text;
                 }
                 var originalErrorLocation = errorLocation;
-                var retriedResult = CalculateResult(cleanedFormula, true);
+                var retriedResult = CalculateResult(cleanedFormula, true, substitutionResolver);
                 if (!retriedResult.IsValid)
                 {
                     retriedResult.ErrorPosition = originalErrorLocation;
