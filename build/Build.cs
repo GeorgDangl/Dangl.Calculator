@@ -35,6 +35,7 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.AzureKeyVault.Attributes;
 using Nuke.Common.Tools.AzureKeyVault;
 using Nuke.Common.IO;
+using Nuke.Common.Tools.Teams;
 
 class Build : NukeBuild
 {
@@ -64,6 +65,7 @@ class Build : NukeBuild
     [KeyVaultSecret] readonly string NuGetApiKey;
     [KeyVaultSecret("DanglCalculator-DocuApiKey")] readonly string DocuApiKey;
     [KeyVaultSecret] readonly string GitHubAuthenticationToken;
+    [KeyVaultSecret] readonly string DanglCiCdTeamsWebhookUrl;
 
     [Solution("Dangl.Calculator.sln")] readonly Solution Solution;
     AbsolutePath SolutionDirectory => Solution.Directory;
@@ -73,6 +75,29 @@ class Build : NukeBuild
     string DocFxFile => SolutionDirectory / "docfx.json";
 
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
+
+    protected override void OnTargetFailed(string target)
+    {
+        if (IsServerBuild)
+        {
+            SendTeamsMessage("Build Failed", $"Target {target} failed for Dangl.Calculator, " +
+                        $"Branch: {GitRepository.Branch}", true);
+        }
+    }
+
+    void SendTeamsMessage(string title, string message, bool isError)
+    {
+        if (!string.IsNullOrWhiteSpace(DanglCiCdTeamsWebhookUrl))
+        {
+            var themeColor = isError ? "f44336" : "00acc1";
+            TeamsTasks
+                .SendTeamsMessage(m => m
+                    .SetTitle(title)
+                    .SetText(message)
+                    .SetThemeColor(themeColor),
+                    DanglCiCdTeamsWebhookUrl);
+        }
+    }
 
     Target Clean => _ => _
             .Executes(() =>
@@ -259,6 +284,8 @@ class Build : NukeBuild
                             .SetTargetPath(x)
                             .SetSource("https://api.nuget.org/v3/index.json")
                             .SetApiKey(NuGetApiKey));
+
+                        SendTeamsMessage("New Release", $"New release available for Dangl.Calculator: {GitVersion.NuGetVersion}", false);
                     }
                 });
         });
