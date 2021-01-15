@@ -10,7 +10,7 @@ namespace Dangl.Calculator.Tests
             private void RunTest(string formula, double expectedResult)
             {
                 var calculationResult = Calculator.Calculate(formula);
-                Assert.True(calculationResult.IsValid);
+                Assert.False(calculationResult.IsValid);
                 Assert.Equal(-1, calculationResult.ErrorPosition);
                 Assert.True(string.IsNullOrWhiteSpace(calculationResult.ErrorMessage));
                 Assert.Equal(expectedResult, calculationResult.Result, 7);
