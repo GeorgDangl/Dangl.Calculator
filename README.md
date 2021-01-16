@@ -151,7 +151,7 @@ var result = Calculator.Calculate(formula, substitution =>
 });
 ```
 
-The callback is in the form of a `Func<string, decimal?>`, and it will be called for every substitution found in the formula. Multiple substitutions are supported.
+The callback is in the form of a `Func<string, double?>`, and it will be called for every substitution found in the formula. Multiple substitutions are supported.
 If duplicates in substitutions are present, the calculator will request each one individually. If a substitution resolves to `null`, the formula is considered invalid.
 
 Substitutions must always start with the `#` character and can then have the following characters: `[a-z] | [A-Z] | [äÄöÖüÜ] | [0-9]`
