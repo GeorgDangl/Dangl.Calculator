@@ -1276,6 +1276,19 @@ namespace Dangl.Calculator.Tests
                 Assert.True(result.IsValid);
                 Assert.Equal(2.846578, result.Result, 5);
             }
+
+            [Fact]
+            public void ReportsCorrectSubstitution()
+            {
+                var formula = "1+2+#3+4";
+                var reportedSubstitution = string.Empty;
+                var result = Calculator.Calculate(formula, subs =>
+                {
+                    reportedSubstitution = subs;
+                    return null;
+                });
+                Assert.Equal("#3", reportedSubstitution);
+            }
         }
     }
 }

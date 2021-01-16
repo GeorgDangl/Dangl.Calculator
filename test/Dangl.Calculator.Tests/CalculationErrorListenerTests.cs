@@ -72,5 +72,15 @@ namespace Dangl.Calculator.Tests
             errorListener.SyntaxError(null, null, 0, 5, null, null);
             Assert.Equal(5, errorListener.ErrorLocation);
         }
+
+        [Fact]
+        public void CanReportUnresolvableSubstitutions()
+        {
+            var errorListener = new CalculatorErrorListener();
+            errorListener.ReportSubstitutionNotFound(3, "#Test");
+            Assert.False(errorListener.IsValid);
+            Assert.Equal(3, errorListener.ErrorLocation);
+            Assert.Contains("#Test", errorListener.ErrorMessage);
+        }
     }
 }
