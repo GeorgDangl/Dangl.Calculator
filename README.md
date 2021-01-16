@@ -135,7 +135,7 @@ Comments in Formulas are supported by encapsulating them either in `/*...*/`, `'
 
 The calculator can be called with an overload that accepts a callback function for substitution values. For example, take the following formula:  
 `1,2*#Z4+3`  
-Here, `#Z4` is a _substitution_, which is a placeholder that can be externally supplied. Let's say you want to resolve `Z#4` to the value three, you could
+Here, `#Z4` is a _substitution_, which is a placeholder that can be externally supplied. Let's say you want to resolve `#Z4` to the value three, you could
 make this simple call:
 
 ```csharp
