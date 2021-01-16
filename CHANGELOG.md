@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.3.1:
+- Updates to README
+
 ## v1.3.0:
 - Add support for substitutions in formulas
 
