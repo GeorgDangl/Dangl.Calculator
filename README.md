@@ -21,6 +21,8 @@ Whenever a calculation is performed, a `CalculationResult` is returned with the 
 | ErrorMessage  | string  | ANTLR error message for invalid formulas, else null                                         |
 | Result        | double  | `NaN` for invalid formulas, else the actual result                                          |
 
+You can find the TypeScript version here: https://github.com/GeorgDangl/antlr-calculator
+
 ## Installation
 
 Install it via NuGet: `Dangl.Calculator`
