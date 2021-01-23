@@ -1224,6 +1224,7 @@ namespace Dangl.Calculator.Tests
                 Assert.True(result.IsValid);
                 Assert.Equal(4, result.Result);
             }
+
             [Fact]
             public void CanCalculateSubstitution_02()
             {
