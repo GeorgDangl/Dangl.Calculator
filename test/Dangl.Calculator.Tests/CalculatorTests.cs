@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xunit;
 
 namespace Dangl.Calculator.Tests
@@ -1315,5 +1315,146 @@ namespace Dangl.Calculator.Tests
                 var actual = Calculator.Calculate(formula);
                 Assert.Equal(7, actual.Result);
                 Assert.True(actual.IsValid);
+            }
+        }
+
+        public class TrailingCommentWithSemicolon
+        {
+            [Fact]
+            public void CalculatesCorrectly_WithoutExtraText()
+            {
+                var formula = "1+1;";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSingleLetterExtraText()
+            {
+                var formula = "1+1;a";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithExtraText()
+            {
+                var formula = "1+1;Hello World!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithExtraTextAndNewlines_01()
+            {
+                var formula = "1+1;Hello\rWorld!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithExtraTextAndNewlines_02()
+            {
+                var formula = "1+1;Hello\r\nWorld!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithExtraTextAndNewlines_03()
+            {
+                var formula = "1+1;Hello\nWorld!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithExtraTextWithManySymbols()
+            {
+                var formula = "1+1;012abcABC#öäüÄÖÜ!\"§😀";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInComment_DoubleQuotes()
+            {
+                var formula = "1\"here;look\"+1";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInComment_SingleQuotes()
+            {
+                var formula = "1'here;look'+1";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInComment_CStyle()
+            {
+                var formula = "1/*here;look*/+1";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInCommentAndAtEndWithoutExtraText_DoubleQuotes()
+            {
+                var formula = "1\"here;look\"+1;";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInCommentAndAtEndWithoutExtraText_SingleQuotes()
+            {
+                var formula = "1'here;look'+1;";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInCommentAndAtEndWithoutExtraText_CStyle()
+            {
+                var formula = "1/*here;look*/+1;";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInCommentAndAtEndWithExtraText_DoubleQuotes()
+            {
+                var formula = "1\"here;look\"+1;Hello World!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInCommentAndAtEndWithExtraText_SingleQuotes()
+            {
+                var formula = "1'here;look'+1;Hello World!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void CalculatesCorrectly_WithSemicolonInCommentAndAtEndWithExtraText_CStyle()
+            {
+                var formula = "1/*here;look*/+1;Hello World!";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void DoesNotFailDueToFalselyDetectedSubstitutionAfterSemicolon_01()
+            {
+                var formula = "1+1;See #1";
+                CheckCalculation(formula, 2, true);
+            }
+
+            [Fact]
+            public void DoesNotFailDueToFalselyDetectedSubstitutionAfterSemicolon_02()
+            {
+                var formula = "1+1;See #1";
+                CheckCalculation(formula, 2, true);
+            }
+
+            private void CheckCalculation(string formula, double? expectedResult, bool shouldBeSuccess)
+            {
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(shouldBeSuccess, actual.IsValid);
+                if (expectedResult != null)
+                {
+                    Assert.Equal(expectedResult, actual.Result);
+                }
+            }
+        }
     }
 }

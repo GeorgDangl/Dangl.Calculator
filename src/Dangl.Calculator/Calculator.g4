@@ -39,7 +39,7 @@ grammar Calculator;
  */
 
 // Main entry for the calculator
-calculator : expression '='? compileUnit;
+calculator : expression '='? trailingComment? compileUnit;
 
 // Possible expression types
 expression    :    SUB expression                              #Unary          // Unary minus sign (negative numbers)
@@ -88,7 +88,8 @@ expression    :    SUB expression                              #Unary          /
               ;
 
 // End of file
-compileUnit    :    EOF;
+trailingComment: SEMICOLON .*? ;
+compileUnit    : EOF ;
 
 /*
  * Lexer Rules
@@ -140,6 +141,7 @@ DEG         : [Dd][Ee][Gg]                    ;
 WS          : (' '|'\t'|'\r'|'\n') -> skip    ;
 COM         : COMMENT              -> skip    ;
 SUBSTITUTION: '#' ([a-z] | [A-Z] | [äÄöÖüÜ] | [0-9])+ ;
+SEMICOLON   : ';'                             ;
 INVALID     : .                               ;
 
 fragment COMMENT    : '/*' .*? '*/'

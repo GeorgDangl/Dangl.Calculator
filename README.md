@@ -156,6 +156,13 @@ If duplicates in substitutions are present, the calculator will request each one
 
 Substitutions must always start with the `#` character and can then have the following characters: `[a-z] | [A-Z] | [äÄöÖüÜ] | [0-9]`
 
+## Trailing comments
+
+Formulas may be terminated with a semicolon `;` at the end, followed by extra input that is not evaluated. This is useful when, instead of regular comments, you
+just want to attach some trailing formation at the end of a formula. For example, the following formula:  
+`1 + 3; As per our counting`  
+Would just evaluate the `1 + 3` portion and return a valid result with the value `4`, ignoring the trailing semicolon and all input that follows.
+
 ## Assembly Strong Naming & Usage in Signed Applications
 
 This module produces strong named assemblies when compiled. When consumers of this package require strongly named assemblies, for example when they
