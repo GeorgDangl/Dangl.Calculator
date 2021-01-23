@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xunit;
 
 namespace Dangl.Calculator.Tests
@@ -1289,6 +1289,31 @@ namespace Dangl.Calculator.Tests
                 });
                 Assert.Equal("#3", reportedSubstitution);
             }
-        }
+
+            [Fact]
+            public void IgnoresSubstitutionLikeInComment_DoubleQuotes()
+            {
+                var formula = "1+2+\"#3+\"4";
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(7, actual.Result);
+                Assert.True(actual.IsValid);
+            }
+
+            [Fact]
+            public void IgnoresSubstitutionLikeInComment_SingleQuotes()
+            {
+                var formula = "1+2+'#3+'4";
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(7, actual.Result);
+                Assert.True(actual.IsValid);
+            }
+
+            [Fact]
+            public void IgnoresSubstitutionLikeInComment_CStyle()
+            {
+                var formula = "1+2+/*#3+*/4";
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(7, actual.Result);
+                Assert.True(actual.IsValid);
     }
 }
