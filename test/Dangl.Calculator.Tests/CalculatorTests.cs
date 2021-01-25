@@ -1292,6 +1292,21 @@ namespace Dangl.Calculator.Tests
             }
 
             [Fact]
+            public void SubstitutionIsEvaluatedOnceWhenReturnsError()
+            {
+                var formula = "#1";
+                var evaluations = "";
+                var result = Calculator.Calculate(formula, substitution =>
+                {
+                    evaluations += substitution;
+                    return null;
+                });
+
+                Assert.False(result.IsValid);
+                Assert.Equal("#1", evaluations);
+            }
+
+            [Fact]
             public void IgnoresSubstitutionLikeInComment_DoubleQuotes()
             {
                 var formula = "1+2+\"#3+\"4";
