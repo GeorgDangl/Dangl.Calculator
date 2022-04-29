@@ -67,20 +67,12 @@ pipeline {
                                     xUnitDotNet(deleteOutputFiles: true, failIfNotNew: true, pattern: '**/*testresults.xml', stopProcessingIfError: true)
                                 ])
                             cobertura(
-                                coberturaReportFile: 'output/cobertura_coverage.xml',
+                                coberturaReportFile: 'output/Cobertura.xml',
                                 failUnhealthy: false,
                                 failUnstable: false,
                                 maxNumberOfBuilds: 0,
                                 onlyStable: false,
                                 zoomCoverageChart: false)
-                            publishHTML([
-                                allowMissing: false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll: false,
-                                reportDir: 'output/CoverageReport',
-                                reportFiles: 'index.htm',
-                                reportName: 'Coverage Report',
-                                reportTitles: ''])
                         }
                     }
                 }

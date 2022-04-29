@@ -24,6 +24,7 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.IO.XmlTasks;
+using static Nuke.Common.IO.TextTasks;
 using static Nuke.Common.Tools.DocFX.DocFXTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -36,6 +37,7 @@ using Nuke.Common.Tools.AzureKeyVault.Attributes;
 using Nuke.Common.Tools.AzureKeyVault;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.Teams;
+using Nuke.Common.Tools.Coverlet;
 
 class Build : NukeBuild
 {
@@ -198,57 +200,118 @@ class Build : NukeBuild
             var testProjects = GlobFiles(SolutionDirectory / "test", "**/*.csproj").ToList();
             var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
 
-            var snapshotIndex = 0;
             try
             {
-                DotCoverCover(c => c
-                    .SetTargetExecutable(dotnetPath)
-                    .SetFilters("+:Dangl.Calculator")
-                    .SetAttributeFilters("System.CodeDom.Compiler.GeneratedCodeAttribute")
-                    .CombineWith(cc => testProjects.SelectMany(testProject => {
-                        var projectDirectory = Path.GetDirectoryName(testProject);
-                        var targetFrameworks = GetTestFrameworksForProjectFile(testProject);
-                        return targetFrameworks.Select(targetFramework =>
+                DotNetTest(c => c
+                    .EnableCollectCoverage()
+                    .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                    .EnableNoBuild()
+                    .SetTestAdapterPath(".")
+                    .SetProcessArgumentConfigurator(a => a
+                        .Add($"/p:Include=[Dangl.Calculator*]*"))
+                    .CombineWith(cc => testProjects
+                        .Select(testProject =>
                         {
-                            snapshotIndex++;
+                            var projectDirectory = Path.GetDirectoryName(testProject);
+                            var projectName = Path.GetFileNameWithoutExtension(testProject);
                             return cc
-                                .SetTargetWorkingDirectory(projectDirectory)
-                                .SetOutputFile(OutputDirectory / $"coverage{snapshotIndex:00}.snapshot")
-                                .SetTargetArguments($"test --no-build -f {targetFramework} --test-adapter-path:. \"--logger:xunit;LogFilePath={OutputDirectory}/{snapshotIndex}_testresults-{targetFramework}.xml\"");
-                        });
-                    })), degreeOfParallelism: System.Environment.ProcessorCount,
-                    completeOnFailure: true);
+                             .SetProjectFile(testProject)
+                             .SetLoggers($"xunit;LogFilePath={OutputDirectory / projectName}_testresults.xml")
+                             .SetCoverletOutput($"{OutputDirectory / projectName}_coverage.xml");
+                        })),
+                            degreeOfParallelism: Environment.ProcessorCount,
+                            completeOnFailure: true);
             }
             finally
             {
-                PrependFrameworkToTestresults();
+                EnsureTestFilesHaveUniqueTimestamp();
+
+                // Merge coverage reports, otherwise they might not be completely
+                // picked up by Jenkins
+                ReportGenerator(c => c
+                    .SetFramework("net5.0")
+                    .SetReports(OutputDirectory / "*_coverage.xml")
+                    .SetTargetDirectory(OutputDirectory)
+                    .SetReportTypes(ReportTypes.Cobertura));
+
+                MakeSourceEntriesRelativeInCoberturaFormat(OutputDirectory / "Cobertura.xml");
+            }
+        });
+
+    private void MakeSourceEntriesRelativeInCoberturaFormat(string coberturaReportPath)
+    {
+        var originalText = ReadAllText(coberturaReportPath);
+        var xml = XDocument.Parse(originalText);
+
+        var xDoc = XDocument.Load(coberturaReportPath);
+
+        var sourcesEntry = xDoc
+            .Root
+            .Elements()
+            .Where(e => e.Name.LocalName == "sources")
+            .Single();
+
+        string basePath;
+        if (sourcesEntry.HasElements)
+        {
+            var elements = sourcesEntry.Elements().ToList();
+            basePath = elements
+                .Select(e => e.Value)
+                .OrderBy(p => p.Length)
+                .First();
+            foreach (var element in elements)
+            {
+                if (element.Value != basePath)
+                {
+                    element.Remove();
+                }
+            }
+        }
+        else
+        {
+            basePath = sourcesEntry.Value;
+        }
+
+        Serilog.Log.Information($"Normalizing Cobertura report to base path: \"{basePath}\"");
+
+        var filenameAttributes = xDoc
+            .Root
+            .Descendants()
+            .Where(d => d.Attributes().Any(a => a.Name.LocalName == "filename"))
+            .Select(d => d.Attributes().First(a => a.Name.LocalName == "filename"));
+        foreach (var filenameAttribute in filenameAttributes)
+        {
+            if (filenameAttribute.Value.StartsWith(basePath))
+            {
+                filenameAttribute.Value = filenameAttribute.Value.Substring(basePath.Length);
+            }
+        }
+
+        xDoc.Save(coberturaReportPath);
+    }
+
+    private void EnsureTestFilesHaveUniqueTimestamp()
+    {
+        var testResults = GlobFiles(OutputDirectory, "*_testresults.xml").ToList();
+        var runtime = DateTime.Now;
+
+        foreach (var testResultFile in testResults)
+        {
+            // The "run-time" attributes of the assemblies is ensured to be unique for each single assembly by this test,
+            // since in Jenkins, the format is internally converted to JUnit. Aterwards, results with the same timestamps are
+            // ignored. See here for how the code is translated to JUnit format by the Jenkins plugin:
+            // https://github.com/jenkinsci/xunit-plugin/blob/d970c50a0501f59b303cffbfb9230ba977ce2d5a/src/main/resources/org/jenkinsci/plugins/xunit/types/xunitdotnet-2.0-to-junit.xsl#L75-L79
+            var xDoc = XDocument.Load(testResultFile);
+            var assemblyNodes = xDoc.Root.Elements().Where(e => e.Name.LocalName == "assembly");
+            foreach (var assemblyNode in assemblyNodes)
+            {
+                assemblyNode.SetAttributeValue("run-time", $"{runtime:HH:mm:ss}");
+                runtime = runtime.AddSeconds(1);
             }
 
-            var snapshots = GlobFiles(OutputDirectory, "*.snapshot")
-               .Aggregate((c, n) => c + ";" + n);
-
-            DotCoverMerge(c => c
-                .SetSource(snapshots)
-                .SetOutputFile(OutputDirectory / "coverage.snapshot"));
-
-            DotCoverReport(c => c
-                .SetSource(OutputDirectory / "coverage.snapshot")
-                .SetOutputFile(OutputDirectory / "coverage.xml")
-                .SetReportType(DotCoverReportType.DetailedXml));
-
-            // This is the report that's pretty and visualized in Jenkins
-            ReportGenerator(c => c
-                .SetFramework("netcoreapp3.0")
-                .SetReports(OutputDirectory / "coverage.xml")
-                .SetTargetDirectory(OutputDirectory / "CoverageReport"));
-
-            // This is the report in Cobertura format that integrates so nice in Jenkins
-            // dashboard and allows to extract more metrics and set build health based
-            // on coverage readings
-            await DotCoverToCobertura(s => s
-                    .SetInputFile(OutputDirectory / "coverage.xml")
-                    .SetOutputFile(OutputDirectory / "cobertura_coverage.xml"));
-        });
+            xDoc.Save(testResultFile);
+        }
+    }
 
     IEnumerable<string> GetTestFrameworksForProjectFile(string projectFile)
     {
