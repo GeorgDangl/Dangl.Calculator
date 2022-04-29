@@ -159,7 +159,7 @@ class Build : NukeBuild
                              .Select(targetFramework => cc
                                  .SetFramework(targetFramework)
                                  .SetProcessWorkingDirectory(Path.GetDirectoryName(testProject))
-                                 .SetLogger($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
+                                 .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
                                  degreeOfParallelism: Environment.ProcessorCount);
              }
              finally
@@ -178,7 +178,7 @@ class Build : NukeBuild
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
                    .SetTestAdapterPath(".")
                    .SetFramework("netcoreapp3.1")
-                   .SetLogger($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
+                   .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
                    // There's a bug where the 'dotnet test' process hangs for 15 minutes after
@@ -268,7 +268,10 @@ class Build : NukeBuild
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
         {
-            GlobFiles(OutputDirectory, "*.nupkg").NotEmpty()
+            var packages = GlobFiles(OutputDirectory, "*.nupkg").ToList();
+            Assert.NotEmpty(packages);
+
+            packages
                 .Where(x => !x.EndsWith("symbols.nupkg"))
                 .ForEach(x =>
                 {
@@ -349,7 +352,8 @@ class Build : NukeBuild
             var completeChangeLog = $"## {releaseTag}" + Environment.NewLine + latestChangeLog;
 
             var repositoryInfo = GetGitHubRepositoryInfo(GitRepository);
-            var nuGetPackages = GlobFiles(OutputDirectory, "*.nupkg").NotEmpty().ToArray();
+            var nuGetPackages = GlobFiles(OutputDirectory, "*.nupkg").ToArray();
+            Assert.NotEmpty(nuGetPackages);
 
             await PublishRelease(x => x
                     .SetArtifactPaths(nuGetPackages)
