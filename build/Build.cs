@@ -195,7 +195,7 @@ class Build : NukeBuild
 
     Target Coverage => _ => _
         .DependsOn(Compile)
-        .Executes(async () =>
+        .Executes(() =>
         {
             var testProjects = GlobFiles(SolutionDirectory / "test", "**/*.csproj").ToList();
             var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
