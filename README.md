@@ -4,8 +4,6 @@
 [![NuGet](https://img.shields.io/nuget/v/Dangl.Calculator.svg)](https://www.nuget.org/packages/Dangl.Calculator)
 [![MyGet](https://img.shields.io/myget/dangl/v/Dangl.Calculator.svg)]()
 
-[![Built with Nuke](http://nuke.build/rounded)](https://www.nuke.build)  
-
 [Online Documentation](https://docs.dangl-it.com/Projects/Dangl.Calculator)  
 [Changelog](./CHANGELOG.md)  
 
