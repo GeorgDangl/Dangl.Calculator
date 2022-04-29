@@ -179,7 +179,7 @@ class Build : NukeBuild
                 DotNetTest(x => x
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
                    .SetTestAdapterPath(".")
-                   .SetFramework("netcoreapp3.1")
+                   .SetFramework("net6.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
