@@ -209,6 +209,7 @@ class Build : NukeBuild
                     .SetTestAdapterPath(".")
                     .SetProcessArgumentConfigurator(a => a
                         .Add($"/p:Include=[Dangl.Calculator*]*")
+                        .Add($"/p:ExcludeByAttribute=\\\"Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute\\\"")
                         .Add("-- RunConfiguration.DisableAppDomain=true"))
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
