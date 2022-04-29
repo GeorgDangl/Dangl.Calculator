@@ -34,6 +34,36 @@ namespace Dangl.Calculator
             return 0;
         }
 
+        public override double VisitMin([NotNull] CalculatorParser.MinContext context)
+        {
+            var currentMin = Visit(context._expr[0]);
+
+            if (context._expr.Count > 1)
+            {
+                for (var i = 1; i < context._expr.Count; i++)
+                {
+                    currentMin = Math.Min(currentMin, Visit(context._expr[i]));
+                }
+            }
+            
+            return currentMin;
+        }
+
+        public override double VisitMax([NotNull] CalculatorParser.MaxContext context)
+        {
+            var currentMax = Visit(context._expr[0]);
+
+            if (context._expr.Count > 1)
+            {
+                for (var i = 1; i < context._expr.Count; i++)
+                {
+                    currentMax = Math.Max(currentMax, Visit(context._expr[i]));
+                }
+            }
+
+            return currentMax;
+        }
+
         public override double VisitAbs(CalculatorParser.AbsContext context)
         {
             return Math.Abs(Visit(context.expression()));

@@ -21,6 +21,8 @@ Whenever a calculation is performed, a `CalculationResult` is returned with the 
 | ErrorMessage  | string  | ANTLR error message for invalid formulas, else null                                         |
 | Result        | double  | `NaN` for invalid formulas, else the actual result                                          |
 
+You can find the TypeScript version here: https://github.com/GeorgDangl/antlr-calculator
+
 ## Installation
 
 Install it via NuGet: `Dangl.Calculator`
@@ -104,6 +106,9 @@ public void Example()
 `expression op = ('~'\|'//') expression`    | expr_1 nth root of expr_2             |
 `expression op = ('*'\|'/') expression`     | Multiplication or division            |
 `expression op = ('+'\|'-') expression`     | Addition or subtraction               |
+`NUMBER	`                                  | Single integer or float number        |
+`MIN '(' expression (';' expression)* ')'` | Minimum |
+`MAX '(' expression (';' expression)* ')'` | Maximum |
 `NUMBER	`                                  | Single integer or float number        |
 `'(' expression ')'`                       | Expression within parentheses         |
 `PI '()'?`                                 | Mathematical constant pi = 3,141593   |

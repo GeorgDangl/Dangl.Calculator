@@ -2,6 +2,10 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v1.5.0:
+- Added support for `Min` and `Max` formulas
+- Dropped tests for `netcoreapp2.1` and added tests for `net5.0` and `net6.0`
+
 ## v1.4.0:
 - The calculator now supports trailing comments in a formula, separated by a semicolon `;` at the end of the actual formula input. For example, `1 + 2; Hello World!` now just evaluates `1 + 2` and ignores everything after the semicolon `;`
 

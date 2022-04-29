@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <!-- When inside VS, only the latest netcoreapp2.2 target is built, both for performance and for live unit testing -->
-    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">netcoreapp3.1;netcoreapp2.1;net461;net46;net47;net452</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">net6.0;net5.0;netcoreapp3.1;net461;net46;net47;net452</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">net6.0</TargetFrameworks>
     <AssemblyName>Dangl.Calculator.Tests</AssemblyName>
     <PackageId>Dangl.Calculator.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -38,13 +38,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="XunitXml.TestLogger" Version="2.1.26" />
+    <PackageReference Include="XunitXml.TestLogger" Version="3.0.70" />
+    <PackageReference Include="coverlet.msbuild" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

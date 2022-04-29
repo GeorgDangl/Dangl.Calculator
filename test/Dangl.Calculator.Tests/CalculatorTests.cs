@@ -699,6 +699,82 @@ namespace Dangl.Calculator.Tests
             {
                 RunTest("(+2)", 2);
             }
+
+            [Fact]
+            public void Min_WithSingleArgument()
+            {
+                // Doesn't make a lot of sense...
+                RunTest("min(2)", 2);
+            }
+
+            [Fact]
+            public void Min_WithSingleArgument_IsExpression()
+            {
+                // Doesn't make a lot of sense...
+                RunTest("min(8*7)", 56);
+            }
+
+            [Fact]
+            public void Min_WithTwoArguments()
+            {
+                RunTest("min(1;2)", 1);
+            }
+
+            [Fact]
+            public void Min_WithMultiple()
+            {
+                RunTest("min(1;2;3;4;5)", 1);
+            }
+
+            [Fact]
+            public void Min_WithTwoArguments_OneIsExpression()
+            {
+                RunTest("min(1*3;2)", 2);
+            }
+
+            [Fact]
+            public void Min_WithMultiple_OneIsExpression()
+            {
+                RunTest("min(6;2^2;7;8;5)", 4);
+            }
+
+            [Fact]
+            public void Max_WithSingleArgument()
+            {
+                // Doesn't make a lot of sense...
+                RunTest("max(2)", 2);
+            }
+
+            [Fact]
+            public void Max_WithSingleArgument_IsExpression()
+            {
+                // Doesn't make a lot of sense...
+                RunTest("max(8*7)", 56);
+            }
+
+            [Fact]
+            public void Max_WithTwoArguments()
+            {
+                RunTest("max(1;2)", 2);
+            }
+
+            [Fact]
+            public void Max_WithMultiple()
+            {
+                RunTest("max(1;2;3;4;5)", 5);
+            }
+
+            [Fact]
+            public void Max_WithTwoArguments_OneIsExpression()
+            {
+                RunTest("max(1*3;2)", 3);
+            }
+
+            [Fact]
+            public void Max_WithMultiple_OneIsExpression()
+            {
+                RunTest("max(1;2^2;2;3;-5)", 4);
+            }
         }
 
         public class Expressions
@@ -1224,6 +1300,7 @@ namespace Dangl.Calculator.Tests
                 Assert.True(result.IsValid);
                 Assert.Equal(4, result.Result);
             }
+
             [Fact]
             public void CanCalculateSubstitution_02()
             {
