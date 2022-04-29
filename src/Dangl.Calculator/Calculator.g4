@@ -80,6 +80,8 @@ expression    :    SUB expression                              #Unary          /
               |    '(' expression ')'                          #Parenthesis    // Expression within parentheses
               |    expression '(' expression ')'               #Mult           // Multiplication without sign
               |    '(' expression ')' expression               #Mult           // Multiplication without sign
+              |    MIN '(' expr+=expression (';' expr+=expression)* ')'         #Min            // Minimum
+              |    MAX '(' expr+=expression (';' expr+=expression)* ')'         #Max            // Maximum
               |    expression op=(ADD|SUB) expression          #AddSub         // Addition or subtraction
               |    NUMBER                                      #Number         // Single integer or float number
               |    PI '()'?                                    #Pi             // Mathematical constant pi = 3,141593
@@ -138,6 +140,8 @@ EEX         : [Ee][Ee][Xx]                    ;
 LOG         : [Ll][Oo][Gg]                    ;
 RAD         : [Rr][Aa][Dd]                    ;
 DEG         : [Dd][Ee][Gg]                    ;
+MIN         : [Mm][Ii][Nn]                    ;
+MAX         : [Mm][Aa][Xx]                    ;
 WS          : (' '|'\t'|'\r'|'\n') -> skip    ;
 COM         : COMMENT              -> skip    ;
 SUBSTITUTION: '#' ([a-z] | [A-Z] | [äÄöÖüÜ] | [0-9])+ ;

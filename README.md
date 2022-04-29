@@ -107,6 +107,9 @@ public void Example()
 `expression op = ('*'\|'/') expression`     | Multiplication or division            |
 `expression op = ('+'\|'-') expression`     | Addition or subtraction               |
 `NUMBER	`                                  | Single integer or float number        |
+`MIN '(' expression (';' expression)* ')'` | Minimum |
+`MAX '(' expression (';' expression)* ')'` | Maximum |
+`NUMBER	`                                  | Single integer or float number        |
 `'(' expression ')'`                       | Expression within parentheses         |
 `PI '()'?`                                 | Mathematical constant pi = 3,141593   |
 `expression E+ expression`                 | Exponent, e.g. 10e+43                 |
