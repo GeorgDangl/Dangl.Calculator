@@ -208,17 +208,21 @@ class Build : NukeBuild
                     .EnableNoBuild()
                     .SetTestAdapterPath(".")
                     .SetProcessArgumentConfigurator(a => a
-                        .Add($"/p:Include=[Dangl.Calculator*]*"))
+                        .Add($"/p:Include=[Dangl.Calculator*]*")
+                        .Add("-- RunConfiguration.DisableAppDomain=true"))
                     .CombineWith(cc => testProjects
-                        .Select(testProject =>
+                        .SelectMany(testProject =>
                         {
                             var projectDirectory = Path.GetDirectoryName(testProject);
                             var projectName = Path.GetFileNameWithoutExtension(testProject);
-                            return cc
-                             .SetProjectFile(testProject)
-                             .SetLoggers($"xunit;LogFilePath={OutputDirectory / projectName}_testresults.xml")
-                             .SetCoverletOutput($"{OutputDirectory / projectName}_coverage.xml");
-                        })),
+                            var targetFrameworks = GetTestFrameworksForProjectFile(testProject);
+                            return targetFrameworks.Select(targetFramework => cc
+                                .SetProjectFile(testProject)
+                                .SetCoverletOutput($"{OutputDirectory / projectName}-{targetFramework}_coverage.xml")
+                                .SetFramework(targetFramework)
+                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
+                        }))
+                    ,
                             degreeOfParallelism: Environment.ProcessorCount,
                             completeOnFailure: true);
             }
@@ -226,11 +230,13 @@ class Build : NukeBuild
             {
                 EnsureTestFilesHaveUniqueTimestamp();
 
+                PrependFrameworkToTestresults();
+
                 // Merge coverage reports, otherwise they might not be completely
                 // picked up by Jenkins
                 ReportGenerator(c => c
                     .SetFramework("net5.0")
-                    .SetReports(OutputDirectory / "*_coverage.xml")
+                    .SetReports(OutputDirectory / "*_coverage*.xml")
                     .SetTargetDirectory(OutputDirectory)
                     .SetReportTypes(ReportTypes.Cobertura));
 
