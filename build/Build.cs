@@ -219,7 +219,8 @@ class Build : NukeBuild
                             return targetFrameworks.Select(targetFramework => cc
                                 .SetProjectFile(testProject)
                                 .SetCoverletOutput($"{OutputDirectory / projectName}-{targetFramework}_coverage.xml")
-                                .SetFramework(targetFramework));
+                                .SetFramework(targetFramework)
+                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
                         }))
                     ,
                             degreeOfParallelism: Environment.ProcessorCount,
