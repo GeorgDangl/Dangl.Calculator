@@ -26,34 +26,10 @@ namespace Dangl.Calculator.Tests
         }
 
         [Fact]
-        public void SetToInvalidOnEncounteredError_ReportAmbiguity()
-        {
-            var errorListener = new CalculatorErrorListener();
-            errorListener.ReportAmbiguity(null, null, 0, 0, false, null, null);
-            Assert.False(errorListener.IsValid);
-        }
-
-        [Fact]
-        public void SetToInvalidOnEncounteredError_ReportAttemptingFullContext()
-        {
-            var errorListener = new CalculatorErrorListener();
-            errorListener.ReportAttemptingFullContext(null, null, 0, 0, null, null);
-            Assert.False(errorListener.IsValid);
-        }
-
-        [Fact]
-        public void SetToInvalidOnEncounteredError_ReportContextSensitivity()
-        {
-            var errorListener = new CalculatorErrorListener();
-            errorListener.ReportContextSensitivity(null, null, 0, 0, 0, null);
-            Assert.False(errorListener.IsValid);
-        }
-
-        [Fact]
         public void SetToInvalidOnEncounteredError_SyntaxError()
         {
             var errorListener = new CalculatorErrorListener();
-            errorListener.SyntaxError(null, null, 0, 0, null, null);
+            errorListener.SyntaxError(null, null, null, 0, 0, null, null);
             Assert.False(errorListener.IsValid);
         }
 
@@ -61,7 +37,7 @@ namespace Dangl.Calculator.Tests
         public void DisplayCorrectErrorMessageOnSyntaxError()
         {
             var errorListener = new CalculatorErrorListener();
-            errorListener.SyntaxError(null, null, 0, 0, "Test Message", null);
+            errorListener.SyntaxError(null, null, null, 0, 0, "Test Message", null);
             Assert.Equal("Test Message", errorListener.ErrorMessage);
         }
 
@@ -69,7 +45,7 @@ namespace Dangl.Calculator.Tests
         public void DisplayCorrectErrorLocationOnSyntaxError()
         {
             var errorListener = new CalculatorErrorListener();
-            errorListener.SyntaxError(null, null, 0, 5, null, null);
+            errorListener.SyntaxError(null, null, null, 0, 5, null, null);
             Assert.Equal(5, errorListener.ErrorLocation);
         }
 
