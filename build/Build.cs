@@ -203,13 +203,14 @@ class Build : NukeBuild
             try
             {
                 DotNetTest(c => c
-                    .EnableCollectCoverage()
-                    .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                    .SetDataCollector("XPlat Code Coverage")
+                    .SetResultsDirectory(OutputDirectory)
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format", "cobertura")
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include", "[Dangl.Calculator]*")
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute", "Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute")
                     .EnableNoBuild()
                     .SetTestAdapterPath(".")
                     .SetProcessArgumentConfigurator(a => a
-                        .Add($"/p:Include=[Dangl.Calculator*]*")
-                        .Add($"/p:ExcludeByAttribute=\\\"Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute\\\"")
                         .Add("-- RunConfiguration.DisableAppDomain=true"))
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
@@ -220,8 +221,7 @@ class Build : NukeBuild
                             return targetFrameworks.Select(targetFramework => cc
                                 .SetProjectFile(testProject)
                                 .SetCoverletOutput($"{OutputDirectory / projectName}-{targetFramework}_coverage.xml")
-                                .SetFramework(targetFramework)
-                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
+                                .SetFramework(targetFramework));
                         }))
                     ,
                             degreeOfParallelism: Environment.ProcessorCount,
@@ -236,8 +236,8 @@ class Build : NukeBuild
                 // Merge coverage reports, otherwise they might not be completely
                 // picked up by Jenkins
                 ReportGenerator(c => c
-                    .SetFramework("net5.0")
-                    .SetReports(OutputDirectory / "*_coverage*.xml")
+                    .SetFramework("net6.0")
+                    .SetReports(OutputDirectory / "**/*cobertura.xml")
                     .SetTargetDirectory(OutputDirectory)
                     .SetReportTypes(ReportTypes.Cobertura));
 
