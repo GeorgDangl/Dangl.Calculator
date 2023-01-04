@@ -3,7 +3,6 @@ using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DocFX;
-using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
@@ -26,7 +25,6 @@ using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.IO.XmlTasks;
 using static Nuke.Common.IO.TextTasks;
 using static Nuke.Common.Tools.DocFX.DocFXTasks;
-using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Nuke.GitHub.ChangeLogExtensions;
@@ -179,7 +177,7 @@ class Build : NukeBuild
                 DotNetTest(x => x
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
                    .SetTestAdapterPath(".")
-                   .SetFramework("net6.0")
+                   .SetFramework("net7.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
@@ -203,13 +201,14 @@ class Build : NukeBuild
             try
             {
                 DotNetTest(c => c
-                    .EnableCollectCoverage()
-                    .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                    .SetDataCollector("XPlat Code Coverage")
+                    .SetResultsDirectory(OutputDirectory)
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format", "cobertura")
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include", "[Dangl.Calculator]*")
+                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute", "Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute")
                     .EnableNoBuild()
                     .SetTestAdapterPath(".")
                     .SetProcessArgumentConfigurator(a => a
-                        .Add($"/p:Include=[Dangl.Calculator*]*")
-                        .Add($"/p:ExcludeByAttribute=\\\"Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute\\\"")
                         .Add("-- RunConfiguration.DisableAppDomain=true"))
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
@@ -236,8 +235,8 @@ class Build : NukeBuild
                 // Merge coverage reports, otherwise they might not be completely
                 // picked up by Jenkins
                 ReportGenerator(c => c
-                    .SetFramework("net5.0")
-                    .SetReports(OutputDirectory / "*_coverage*.xml")
+                    .SetFramework("net6.0")
+                    .SetReports(OutputDirectory / "**/*cobertura.xml")
                     .SetTargetDirectory(OutputDirectory)
                     .SetReportTypes(ReportTypes.Cobertura));
 

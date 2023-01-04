@@ -64,7 +64,21 @@ namespace Dangl.Calculator
             var customErrorListener = new CalculatorErrorListener();
             parser.AddErrorListener(customErrorListener);
             var visitor = new CalculatorVisitor(substitutionResolver, customErrorListener);
-            var calculatorExpression = parser.calculator().expression();
+
+            CalculatorParser.ExpressionContext calculatorExpression;
+            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
+            try
+            {
+                calculatorExpression = parser.calculator().expression();
+            }
+            catch
+            {
+                tokenStream.Reset();
+                parser.Reset();
+                parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
+                calculatorExpression = parser.calculator().expression();
+            }
+
             var result = visitor.Visit(calculatorExpression);
             var isValid = customErrorListener.IsValid;
             var errorLocation = customErrorListener.ErrorLocation;
