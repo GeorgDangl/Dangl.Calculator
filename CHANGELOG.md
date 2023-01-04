@@ -4,7 +4,7 @@ All notable changes to **Dangl.Calculator** are documented here.
 
 ## v2.0.0:
 - The ANTLR dependencies were updated from _Antlr.Runtime_ to _Antlr.Runtime.Standard_. The new package is the now official ANTLR runtime package and includes many performance improvements
-- Compatibility for `net40` and `netstandard1.1` was dropped, the lowest supported frameworks now are ´net45` and `netstandard2.0`
+- Compatibility for `net40` and `netstandard1.1` was dropped, the lowest supported frameworks now are Â´net45` and `netstandard2.0`
 - Dropped tests for `net5.0` and added tests for `net7.0`
 
 ## v1.5.0:
