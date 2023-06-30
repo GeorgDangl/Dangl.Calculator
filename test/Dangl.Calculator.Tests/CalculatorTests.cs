@@ -1460,6 +1460,22 @@ namespace Dangl.Calculator.Tests
             }
 
             [Fact]
+            public void ErrorForInvalidRange()
+            {
+                var formula = "#1..4";
+                var reportedStart = string.Empty;
+                var reportedEnd = string.Empty;
+                var result = Calculator.Calculate(formula, null, x =>
+                {
+                    reportedStart = x.Start;
+                    reportedEnd = x.End;
+                    return 5;
+                });
+
+                Assert.False(result.IsValid);
+            }
+
+            [Fact]
             public void CanCalculateMultipleRanges()
             {
                 var formula = "#a..#b + #c..#d * #e..#f";

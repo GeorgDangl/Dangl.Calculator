@@ -38,7 +38,23 @@ namespace Dangl.Calculator
 
         public override double VisitRange([NotNull] CalculatorParser.RangeContext context)
         {
-            var rangeSubstitution = new RangeSubstitution(context.start.Text, context.end.Text);
+            var start = context.start?.Text;
+            if (string.IsNullOrWhiteSpace(start))
+            {
+                _calculatorErrorListener
+                    .ReportRangeNotFound(context.Start.TokenIndex, context.GetText());
+                return 0;
+            }
+
+            var end = context.end?.Text;
+            if (string.IsNullOrWhiteSpace(end))
+            {
+                _calculatorErrorListener
+                    .ReportRangeNotFound(context.Start.TokenIndex, context.GetText());
+                return 0;
+            }
+
+            var rangeSubstitution = new RangeSubstitution(start, end);
             var resolved = _rangeResolver(rangeSubstitution);
             if (resolved != null)
             {
