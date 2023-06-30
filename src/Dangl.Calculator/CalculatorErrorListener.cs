@@ -46,5 +46,18 @@ namespace Dangl.Calculator
             ErrorLocation = errorLocation;
             ErrorMessage = $"The substitution '{substitution}' could not be resolved";
         }
+
+        /// <summary>
+        /// Sets <see cref="IsValid"/> to false and <see cref="ErrorLocation"/> to the value provided by the caller. The <see cref="ErrorMessage"/> will be set
+        /// to indicate which range value was not found.
+        /// </summary>
+        /// <param name="errorLocation"></param>
+        /// <param name="range"></param>
+        public void ReportRangeNotFound(int errorLocation, string range)
+        {
+            IsValid = false;
+            ErrorLocation = errorLocation;
+            ErrorMessage = $"The range '{range}' could not be resolved";
+        }
     }
 }

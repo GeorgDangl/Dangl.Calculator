@@ -10,12 +10,15 @@ namespace Dangl.Calculator
     internal class CalculatorVisitor : CalculatorBaseVisitor<double>
     {
         private readonly Func<string, double?> _substitutionResolver;
+        private readonly Func<RangeSubstitution, double?> _rangeResolver;
         private readonly CalculatorErrorListener _calculatorErrorListener;
 
         public CalculatorVisitor(Func<string, double?> substitutionResolver,
+            Func<RangeSubstitution, double?> rangeResolver,
             CalculatorErrorListener calculatorErrorListener)
         {
             _substitutionResolver = substitutionResolver;
+            _rangeResolver = rangeResolver;
             _calculatorErrorListener = calculatorErrorListener;
         }
 
@@ -30,7 +33,36 @@ namespace Dangl.Calculator
 
             _calculatorErrorListener
                 .ReportSubstitutionNotFound(context.Start.TokenIndex, substitution);
+            return 0;
+        }
 
+        public override double VisitRange([NotNull] CalculatorParser.RangeContext context)
+        {
+            var start = context.start?.Text;
+            if (string.IsNullOrWhiteSpace(start))
+            {
+                _calculatorErrorListener
+                    .ReportRangeNotFound(context.Start.TokenIndex, context.GetText());
+                return 0;
+            }
+
+            var end = context.end?.Text;
+            if (string.IsNullOrWhiteSpace(end))
+            {
+                _calculatorErrorListener
+                    .ReportRangeNotFound(context.Start.TokenIndex, context.GetText());
+                return 0;
+            }
+
+            var rangeSubstitution = new RangeSubstitution(start, end);
+            var resolved = _rangeResolver(rangeSubstitution);
+            if (resolved != null)
+            {
+                return resolved.Value;
+            }
+
+            _calculatorErrorListener
+                .ReportRangeNotFound(context.Start.TokenIndex, context.GetText());
             return 0;
         }
 

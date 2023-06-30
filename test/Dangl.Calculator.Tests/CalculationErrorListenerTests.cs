@@ -58,5 +58,15 @@ namespace Dangl.Calculator.Tests
             Assert.Equal(3, errorListener.ErrorLocation);
             Assert.Contains("#Test", errorListener.ErrorMessage);
         }
+
+        [Fact]
+        public void CanReportUnresolvableRanges()
+        {
+            var errorListener = new CalculatorErrorListener();
+            errorListener.ReportRangeNotFound(3, "#Test..#End");
+            Assert.False(errorListener.IsValid);
+            Assert.Equal(3, errorListener.ErrorLocation);
+            Assert.Contains("#Test..#End", errorListener.ErrorMessage);
+        }
     }
 }

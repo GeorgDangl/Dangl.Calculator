@@ -1395,6 +1395,154 @@ namespace Dangl.Calculator.Tests
             }
         }
 
+        public class Ranges
+        {
+            [Fact]
+            public void ErrorWhenRangeCanNotBeResolved_NoneGiven()
+            {
+                var formula = "1+#1..#2";
+                var result = Calculator.Calculate(formula);
+
+                Assert.False(result.IsValid);
+                Assert.Equal(double.NaN, result.Result);
+                Assert.Equal(2, result.ErrorPosition);
+                Assert.Contains("#1..#2", result.ErrorMessage);
+            }
+
+            [Fact]
+            public void ErrorWhenRangeCanNotBeResolved_ReturnsNull()
+            {
+                var formula = "1+#1..#2";
+                var result = Calculator.Calculate(formula, null, _ => null);
+
+                Assert.False(result.IsValid);
+                Assert.Equal(double.NaN, result.Result);
+                Assert.Equal(2, result.ErrorPosition);
+                Assert.Contains("#1", result.ErrorMessage);
+            }
+
+            [Fact]
+            public void CanCalculateRange()
+            {
+                var formula = "1+#A..#Z";
+                var reportedStart = string.Empty;
+                var reportedEnd = string.Empty;
+                var result = Calculator.Calculate(formula, null, x =>
+                {
+                    reportedStart = x.Start;
+                    reportedEnd = x.End;
+                    return 5;
+                });
+
+                Assert.True(result.IsValid);
+                Assert.Equal(6, result.Result);
+                Assert.Equal("#A", reportedStart);
+                Assert.Equal("#Z", reportedEnd);
+            }
+
+            [Fact]
+            public void CanCalculateRange_02()
+            {
+                var formula = "1+#A1..#Z4+4";
+                var reportedStart = string.Empty;
+                var reportedEnd = string.Empty;
+                var result = Calculator.Calculate(formula, null, x =>
+                {
+                    reportedStart = x.Start;
+                    reportedEnd = x.End;
+                    return 5;
+                });
+
+                Assert.True(result.IsValid);
+                Assert.Equal(10, result.Result);
+                Assert.Equal("#A1", reportedStart);
+                Assert.Equal("#Z4", reportedEnd);
+            }
+
+            [Fact]
+            public void ErrorForInvalidRange()
+            {
+                var formula = "#1..4";
+                var reportedStart = string.Empty;
+                var reportedEnd = string.Empty;
+                var result = Calculator.Calculate(formula, null, x =>
+                {
+                    reportedStart = x.Start;
+                    reportedEnd = x.End;
+                    return 5;
+                });
+
+                Assert.False(result.IsValid);
+            }
+
+            [Fact]
+            public void CanCalculateMultipleRanges()
+            {
+                var formula = "#a..#b + #c..#d * #e..#f";
+                var result = Calculator.Calculate(formula, null, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(12, result.Result);
+            }
+
+            [Fact]
+            public void CanCalculateRangeAndSubstitutions()
+            {
+                var formula = "#a + #b..#c";
+                var result = Calculator.Calculate(formula, _ => 1, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(4, result.Result);
+            }
+
+            [Fact]
+            public void CanCalculateRangeAndSubstitutions_02()
+            {
+                var formula = "#a *3 + 2* #b..#c";
+                var result = Calculator.Calculate(formula, _ => 1, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(9, result.Result);
+            }
+
+            [Fact]
+            public void CanUseRangeInComplexFormula()
+            {
+                var formula = "log10*pi/#12d..#14y*e";
+                var result = Calculator.Calculate(formula, null, _ => 3);
+
+                Assert.True(result.IsValid);
+                Assert.Equal(2.846578, result.Result, 5);
+            }
+
+            [Fact]
+            public void IgnoresRangeLikeInComment_DoubleQuotes()
+            {
+                var formula = "1+2+\"#3..#5+\"4";
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(7, actual.Result);
+                Assert.True(actual.IsValid);
+            }
+
+            [Fact]
+            public void IgnoresRangeLikeInComment_SingleQuotes()
+            {
+                var formula = "1+2+'#3..#4+'4";
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(7, actual.Result);
+                Assert.True(actual.IsValid);
+            }
+
+            [Fact]
+            public void IgnoresRangeLikeInComment_CStyle()
+            {
+                var formula = "1+2+/*#3..#4+*/4";
+                var actual = Calculator.Calculate(formula);
+                Assert.Equal(7, actual.Result);
+                Assert.True(actual.IsValid);
+            }
+        }
+
         public class TrailingCommentWithSemicolon
         {
             [Fact]
