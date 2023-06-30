@@ -159,6 +159,10 @@ If duplicates in substitutions are present, the calculator will request each one
 
 Substitutions must always start with the `#` character and can then have the following characters: `[a-z] | [A-Z] | [äÄöÖüÜ] | [0-9]`
 
+## Ranges
+
+Similar to `Substitutions`, the calculator also can handle `Ranges`. They look like two substitutions joined by two points, e.g. `#1..#5`. A separate range resolver can be supplied to the calculator as a callback function, so that you can plug in your own logic to resolve ranges when being given a `Start` and `End` substitution.
+
 ## Trailing comments
 
 Formulas may be terminated with a semicolon `;` at the end, followed by extra input that is not evaluated. This is useful when, instead of regular comments, you

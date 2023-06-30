@@ -86,6 +86,7 @@ expression    :    SUB expression                              #Unary          /
               |    NUMBER                                      #Number         // Single integer or float number
               |    PI '()'?                                    #Pi             // Mathematical constant pi = 3,141593
               |    EULER                                       #Euler          // Mathematical constant e = 2,718282
+              |    start=SUBSTITUTION '..' end=SUBSTITUTION    #Range
               |    SUBSTITUTION                                #Substitution
               ;
 

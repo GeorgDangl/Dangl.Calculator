@@ -15,7 +15,7 @@ namespace Dangl.Calculator
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         public static CalculationResult Calculate(string formula)
         {
-            return CalculateResult(formula, false, _ => null);
+            return CalculateResult(formula, false, _ => null, _ => null);
         }
 
         /// <summary>
@@ -28,7 +28,24 @@ namespace Dangl.Calculator
         /// </param>
         public static CalculationResult Calculate(string formula, Func<string, double?> substitutionResolver)
         {
-            return CalculateResult(formula, false, substitutionResolver);
+            return CalculateResult(formula, false, substitutionResolver, _ => null);
+        }
+
+        /// <summary>
+        ///     This takes a string as input and returns the calculated result as decimal.
+        /// </summary>
+        /// <param name="formula">The mathematical expression as string to be calculated.</param>
+        /// <param name="substitutionResolver">
+        ///     This callback may be used to resolve substitutions. If a null value is returned
+        ///     by this callback, the formula is considered invalid.
+        /// </param>
+        /// <param name="rangeResolver">This callback may be used to resolve range substitutions. If a null value is returned by this callback,
+        /// the formula is considerd invalid.</param>
+        public static CalculationResult Calculate(string formula,
+            Func<string, double?> substitutionResolver,
+            Func<RangeSubstitution, double?> rangeResolver)
+        {
+            return CalculateResult(formula, false, substitutionResolver, rangeResolver);
         }
 
         /// <summary>
@@ -41,8 +58,13 @@ namespace Dangl.Calculator
         ///     This callback may be used to resolve substitutions. If a null value is returned
         ///     by this callback, the formula is considered invalid.
         /// </param>
+        /// <param name="rangeResolver">This callback may be used to resolve range substitutions. If a null value is returned by this callback,
+        /// the formula is considerd invalid.</param>
         /// <returns></returns>
-        private static CalculationResult CalculateResult(string formula, bool secondRun, Func<string, double?> substitutionResolver)
+        private static CalculationResult CalculateResult(string formula,
+            bool secondRun,
+            Func<string, double?> substitutionResolver,
+            Func<RangeSubstitution, double?> rangeResolver)
         {
             if (string.IsNullOrWhiteSpace(formula))
             {
@@ -63,7 +85,7 @@ namespace Dangl.Calculator
             // But adding the custom one
             var customErrorListener = new CalculatorErrorListener();
             parser.AddErrorListener(customErrorListener);
-            var visitor = new CalculatorVisitor(substitutionResolver, customErrorListener);
+            var visitor = new CalculatorVisitor(substitutionResolver, rangeResolver, customErrorListener);
 
             CalculatorParser.ExpressionContext calculatorExpression;
             parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
@@ -97,7 +119,7 @@ namespace Dangl.Calculator
                     cleanedFormula += tokenList[i].Text;
                 }
                 var originalErrorLocation = errorLocation;
-                var retriedResult = CalculateResult(cleanedFormula, true, substitutionResolver);
+                var retriedResult = CalculateResult(cleanedFormula, true, substitutionResolver, rangeResolver);
                 if (!retriedResult.IsValid)
                 {
                     retriedResult.ErrorPosition = originalErrorLocation;
