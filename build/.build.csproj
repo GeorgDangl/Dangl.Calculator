@@ -16,7 +16,7 @@
     <PackageDownload Include="GitVersion.Tool" Version="[5.11.1]" />
     <PackageReference Include="Nuke.WebDocu" Version="4.0.1" />
     <PackageReference Include="Nuke.GitHub" Version="3.0.0" />
-    <PackageReference Include="ReportGenerator" Version="5.1.22" />
+    <PackageReference Include="ReportGenerator" Version="5.1.26" />
     <PackageReference Include="docfx.console" Version="2.59.4">
       <ExcludeAssets>build</ExcludeAssets>
       <PrivateAssets>all</PrivateAssets>
