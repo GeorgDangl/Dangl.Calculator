@@ -1,5 +1,4 @@
-﻿using Nuke.CoberturaConverter;
-using Nuke.Common;
+﻿using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DocFX;
@@ -17,7 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using static Nuke.CoberturaConverter.CoberturaConverterTasks;
 using static Nuke.Common.ChangeLog.ChangelogTasks;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;

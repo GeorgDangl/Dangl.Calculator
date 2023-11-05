@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="2.0.0" />
     <PackageReference Include="Nuke.Common" Version="7.0.6" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.12.0]" />
     <PackageReference Include="Nuke.WebDocu" Version="5.0.0" />
