@@ -12,10 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="Dangl.Nuke.CoberturaConverter" Version="2.0.0" />
-    <PackageReference Include="Nuke.Common" Version="6.3.0" />
-    <PackageDownload Include="GitVersion.Tool" Version="[5.11.1]" />
-    <PackageReference Include="Nuke.WebDocu" Version="4.0.1" />
-    <PackageReference Include="Nuke.GitHub" Version="3.0.0" />
+    <PackageReference Include="Nuke.Common" Version="7.0.6" />
+    <PackageDownload Include="GitVersion.Tool" Version="[5.12.0]" />
+    <PackageReference Include="Nuke.WebDocu" Version="5.0.0" />
+    <PackageReference Include="Nuke.GitHub" Version="5.0.0" />
     <PackageReference Include="ReportGenerator" Version="5.1.26" />
     <PackageReference Include="docfx.console" Version="2.59.4">
       <ExcludeAssets>build</ExcludeAssets>
