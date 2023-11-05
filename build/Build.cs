@@ -61,8 +61,8 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
 
     [AzureKeyVaultSecret] readonly string DocuBaseUrl;
-    [AzureKeyVaultSecret] readonly string PublicMyGetSource;
-    [AzureKeyVaultSecret] readonly string PublicMyGetApiKey;
+    [AzureKeyVaultSecret] readonly string DanglPublicFeedSource;
+    [AzureKeyVaultSecret] readonly string FeedzAccessToken;
     [AzureKeyVaultSecret] readonly string NuGetApiKey;
     [AzureKeyVaultSecret("DanglCalculator-DocuApiKey")] readonly string DocuApiKey;
     [AzureKeyVaultSecret] readonly string GitHubAuthenticationToken;
@@ -332,8 +332,8 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .DependsOn(Pack)
-        .Requires(() => PublicMyGetSource)
-        .Requires(() => PublicMyGetApiKey)
+        .Requires(() => DanglPublicFeedSource)
+        .Requires(() => FeedzAccessToken)
         .Requires(() => NuGetApiKey)
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
@@ -347,8 +347,8 @@ class Build : NukeBuild
                 {
                     DotNetNuGetPush(s => s
                         .SetTargetPath(x)
-                        .SetSource(PublicMyGetSource)
-                        .SetApiKey(PublicMyGetApiKey));
+                        .SetSource(DanglPublicFeedSource)
+                        .SetApiKey(FeedzAccessToken));
 
                     if (GitVersion.BranchName.Equals("master") || GitVersion.BranchName.Equals("origin/master"))
                     {
