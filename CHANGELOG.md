@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v2.1.1:
+- Dropped tests for `net6.0` and addes tests for `net8.0`
+
 ## v2.1.0:
 - Added support for ranges, e.g. `#START..#END` to implement custom sum logic
 
