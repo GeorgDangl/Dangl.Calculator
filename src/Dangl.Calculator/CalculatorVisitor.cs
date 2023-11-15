@@ -12,14 +12,17 @@ namespace Dangl.Calculator
         private readonly Func<string, double?> _substitutionResolver;
         private readonly Func<RangeSubstitution, double?> _rangeResolver;
         private readonly CalculatorErrorListener _calculatorErrorListener;
+        private readonly bool _detectUnaryMinusInPowersAtStartOfFormula;
 
         public CalculatorVisitor(Func<string, double?> substitutionResolver,
             Func<RangeSubstitution, double?> rangeResolver,
-            CalculatorErrorListener calculatorErrorListener)
+            CalculatorErrorListener calculatorErrorListener,
+            bool detectUnaryMinusInPowersAtStartOfFormula)
         {
             _substitutionResolver = substitutionResolver;
             _rangeResolver = rangeResolver;
             _calculatorErrorListener = calculatorErrorListener;
+            _detectUnaryMinusInPowersAtStartOfFormula = detectUnaryMinusInPowersAtStartOfFormula;
         }
 
         public override double VisitSubstitution([NotNull] CalculatorParser.SubstitutionContext context)
@@ -237,7 +240,36 @@ namespace Dangl.Calculator
 
         public override double VisitPow(CalculatorParser.PowContext context)
         {
-            return Math.Pow(Visit(context.expression(0)), Visit(context.expression(1)));
+            if (!_detectUnaryMinusInPowersAtStartOfFormula)
+            {
+                return Math.Pow(Visit(context.expression(0)), Visit(context.expression(1)));
+            }
+
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+
+            var shouldInvertSign = false;
+            if (left < 0 && context.Start.StartIndex == 0)
+            {
+                // This is a special case, where the formula actually starts with a minus sign
+                // and is then immediately followed by a power. This is an unary minus, but
+                // it should not be actually potentiated. So, meaning "-2^2" should be "-4", e.g.
+                // it first calculated the power of "2^2" and then applies the unary minus.
+                left *= -1;
+                // We're also tracking if we should invert the sign, because we need to correct for
+                // e.g. a root like "-5^0,5", which would return "NaN" if we try to find the root of "-5"
+                // instead of "5".
+                shouldInvertSign = true;
+            }
+
+            var power = Math.Pow(left, right);
+
+            if (shouldInvertSign)
+            {
+                power *= -1;
+            }
+
+            return power;
         }
 
         public override double VisitRad(CalculatorParser.RadContext context)
