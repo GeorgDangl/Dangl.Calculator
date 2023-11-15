@@ -239,6 +239,33 @@ namespace Dangl.Calculator.Tests
             }
 
             [Fact]
+            public void Parentheses_Round()
+            {
+                RunTest("(3-2)*5", 5);
+                RunTest("3-2*5", -7);
+            }
+
+            [Fact]
+            public void Parentheses_Square()
+            {
+                RunTest("[3-2]*5", 5);
+                RunTest("3-2*5", -7);
+            }
+
+            [Fact]
+            public void Parentheses_Curly()
+            {
+                RunTest("{3-2}*5", 5);
+                RunTest("3-2*5", -7);
+            }
+
+            [Fact]
+            public void CanMixParentheses()
+            {
+                RunTest("(2+4)*[5-3]", 12);
+            }
+
+            [Fact]
             public void Calc_SingleNine()
             {
                 RunTest("9", 9);
@@ -1232,6 +1259,59 @@ namespace Dangl.Calculator.Tests
             public void InvalidCharacterAtEnd()
             {
                 RunTest("1+1d", 3);
+            }
+
+            [Fact]
+            public void Parentheses_Round_ClosedWithSquare()
+            {
+                RunTest("(3-2]*5", 4);
+            }
+
+            [Fact]
+            public void Parentheses_Square_ClosedWithRound()
+            {
+                RunTest("[3-2)*5", 4);
+            }
+
+            [Fact]
+            public void Parentheses_Curly_ClosedWithRound()
+            {
+                RunTest("{3-2)*5", 4);
+            }
+
+            [Theory]
+            [InlineData("(", 1)]
+            [InlineData("(1+()", 3)]
+            [InlineData("(1+(2)", 6)]
+            public void Parentheses_InvalidOrder(string formula, int expectedErrorPosition)
+            {
+                RunTest(formula, expectedErrorPosition);
+            }
+
+            [Fact]
+            public void Parentheses_MixedTypes_01()
+            {
+                RunTest("(1+3-[4*5)]", 9);
+            }
+
+            [Fact]
+            public void Parentheses_MixedTypes_02()
+            {
+                RunTest("(1+3-[4*5)]", 9);
+            }
+
+            [Fact]
+            public void Parentheses_MultiplicationImplicitWithSquare()
+            {
+                // We support implicit multiplication only with default, round parentheses
+                RunTest("[3-2]5", 5);
+            }
+
+            [Fact]
+            public void Parentheses_MultiplicationImplicitWithCurly()
+            {
+                // We support implicit multiplication only with default, round parentheses
+                RunTest("{3-2}5", 5);
             }
         }
 

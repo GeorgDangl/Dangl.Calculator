@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <!-- When inside VS, only the latest netcoreapp2.2 target is built, both for performance and for live unit testing -->
-    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">net7.0;net6.0;net461;net46;net47;net452</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">net7.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">net8.0;net7.0;net461;net46;net47;net452</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">net8.0</TargetFrameworks>
     <AssemblyName>Dangl.Calculator.Tests</AssemblyName>
     <PackageId>Dangl.Calculator.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -44,7 +44,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="XunitXml.TestLogger" Version="3.0.78" />
+    <PackageReference Include="XunitXml.TestLogger" Version="3.1.17" />
     <PackageReference Include="coverlet.collector" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

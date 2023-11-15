@@ -1,16 +1,3 @@
-// **************************************
-// *                                    *
-// *  Grammar for calculating           *
-// *  formulas.                         *
-// *  � 2015 Georg Dangl                *
-// *  info@georgdangl.de                *
-// *                                    *
-// **************************************    
-// *                                    *
-// *  Grammar written for ANTLR4        *
-// *  www.antlr.org                     *
-// **************************************
-    
 grammar Calculator;
 
 @parser::members
@@ -78,6 +65,8 @@ expression    :    SUB expression                              #Unary          /
               |    expression op=('~'|'//') expression         #SqRoot         // expr_1 nth root of expr_2
               |    expression op=('*'|'/') expression          #MulDiv         // Multiplication or division
               |    '(' expression ')'                          #Parenthesis    // Expression within parentheses
+              |    '[' expression ']'                          #Parenthesis    // Expression within parentheses
+              |    '{' expression '}'                          #Parenthesis    // Expression within parentheses
               |    expression '(' expression ')'               #Mult           // Multiplication without sign
               |    '(' expression ')' expression               #Mult           // Multiplication without sign
               |    MIN '(' expr+=expression (';' expr+=expression)* ')'         #Min            // Minimum
