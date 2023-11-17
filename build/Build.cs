@@ -17,11 +17,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using static Nuke.Common.ChangeLog.ChangelogTasks;
-using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.IO.XmlTasks;
-using static Nuke.Common.IO.TextTasks;
 using static Nuke.Common.Tools.DocFX.DocFXTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
@@ -84,7 +80,7 @@ class Build : NukeBuild
         }
     }
 
-    void SendTeamsMessage(string title, string message, bool isError)
+    private void SendTeamsMessage(string title, string message, bool isError)
     {
         if (!string.IsNullOrWhiteSpace(DanglCiCdTeamsWebhookUrl))
         {
@@ -318,7 +314,7 @@ class Build : NukeBuild
         }
     }
 
-    IEnumerable<string> GetTestFrameworksForProjectFile(string projectFile)
+    private IEnumerable<string> GetTestFrameworksForProjectFile(string projectFile)
     {
         var targetFrameworks = XmlPeek(projectFile, "//Project/PropertyGroup//TargetFrameworks")
             .Concat(XmlPeek(projectFile, "//Project/PropertyGroup//TargetFramework"))
@@ -433,7 +429,7 @@ class Build : NukeBuild
                     .SetToken(GitHubAuthenticationToken));
         });
 
-    void PrependFrameworkToTestresults()
+    private void PrependFrameworkToTestresults()
     {
         var testResults = OutputDirectory.GlobFiles("*testresults*.xml").ToList();
         foreach (var testResultFile in testResults)
@@ -483,7 +479,7 @@ class Build : NukeBuild
         testResults.ForEach(d => d.DeleteFile());
     }
 
-    string GetFrameworkNameFromFilename(string filename)
+    private string GetFrameworkNameFromFilename(string filename)
     {
         var name = Path.GetFileName(filename);
         name = name.Substring(0, name.Length - ".xml".Length);
