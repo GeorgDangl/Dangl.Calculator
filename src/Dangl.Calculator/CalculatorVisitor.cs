@@ -80,7 +80,7 @@ namespace Dangl.Calculator
                     currentMin = Math.Min(currentMin, Visit(context._expr[i]));
                 }
             }
-            
+
             return currentMin;
         }
 
