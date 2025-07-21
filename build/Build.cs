@@ -178,7 +178,7 @@ class Build : NukeBuild
                    // https://github.com/dotnet/cli/issues/9397
                    // There's a bug where the 'dotnet test' process hangs for 15 minutes after
                    // test completion
-                   .SetProcessArgumentConfigurator(ac => ac.Add("-nodereuse:false")));
+                   .SetProcessAdditionalArguments("-nodereuse:false"));
             }
             finally
             {
@@ -203,8 +203,7 @@ class Build : NukeBuild
                     .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute", "Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute")
                     .EnableNoBuild()
                     .SetTestAdapterPath(".")
-                    .SetProcessArgumentConfigurator(a => a
-                        .Add("-- RunConfiguration.DisableAppDomain=true"))
+                    .AddProcessAdditionalArguments("-- RunConfiguration.DisableAppDomain=true")
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
                         {
