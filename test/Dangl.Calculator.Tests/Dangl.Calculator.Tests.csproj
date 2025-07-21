@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <!-- When inside VS, only the latest netcoreapp2.2 target is built, both for performance and for live unit testing -->
-    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">net8.0;net7.0;net461;net46;net47;net452</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">net8.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">net9.0;net8.0;net461;net46;net47;net452</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">net9.0</TargetFrameworks>
     <AssemblyName>Dangl.Calculator.Tests</AssemblyName>
     <PackageId>Dangl.Calculator.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -38,16 +38,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="XunitXml.TestLogger" Version="[5.0.0]" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(USE_OLD_XUNIT) == 'true'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="XunitXml.TestLogger" Version="3.1.17" />
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
+    <PackageReference Include="xunit" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(USE_OLD_XUNIT) != 'true'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
