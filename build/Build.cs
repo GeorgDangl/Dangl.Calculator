@@ -27,7 +27,6 @@ using static Fallout.WebDocu.WebDocuTasks;
 using Fallout.Common.ProjectModel;
 using Fallout.Common.Tools.AzureKeyVault;
 using Fallout.Common.IO;
-using Fallout.Common.Tools.Teams;
 using Fallout.Common.Tools.Coverlet;
 
 class Build : FalloutBuild
@@ -70,29 +69,6 @@ class Build : FalloutBuild
     string DocFxFile => SolutionDirectory / "docfx.json";
 
     string ChangeLogFile => RootDirectory / "CHANGELOG.md";
-
-    protected override void OnTargetFailed(string target)
-    {
-        if (IsServerBuild)
-        {
-            SendTeamsMessage("Build Failed", $"Target {target} failed for Dangl.Calculator, " +
-                        $"Branch: {GitRepository.Branch}", true);
-        }
-    }
-
-    private void SendTeamsMessage(string title, string message, bool isError)
-    {
-        if (!string.IsNullOrWhiteSpace(DanglCiCdTeamsWebhookUrl))
-        {
-            var themeColor = isError ? "f44336" : "00acc1";
-            TeamsTasks
-                .SendTeamsMessage(m => m
-                    .SetTitle(title)
-                    .SetText(message)
-                    .SetThemeColor(themeColor),
-                    DanglCiCdTeamsWebhookUrl);
-        }
-    }
 
     Target Clean => _ => _
             .Executes(() =>
@@ -350,8 +326,6 @@ class Build : FalloutBuild
                             .SetTargetPath(x)
                             .SetSource("https://api.nuget.org/v3/index.json")
                             .SetApiKey(NuGetApiKey));
-
-                        SendTeamsMessage("New Release", $"New release available for Dangl.Calculator: {GitVersion.NuGetVersion}", false);
                     }
                 });
         });
