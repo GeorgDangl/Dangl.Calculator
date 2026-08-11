@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v2.3.1:
+- Update build script
+
 ## v2.3.0:
 - The latest .NET Framework supported is now `net462`
 - Added a dedicated build target for `net10.0`
