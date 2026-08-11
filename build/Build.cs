@@ -1,14 +1,14 @@
-﻿using Nuke.Common;
-using Nuke.Common.Git;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DocFX;
-using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.GitVersion;
-using Nuke.Common.Tools.ReportGenerator;
-using Nuke.Common.Utilities;
-using Nuke.Common.Utilities.Collections;
-using Nuke.GitHub;
-using Nuke.WebDocu;
+using Fallout.Common;
+using Fallout.Common.Git;
+using Fallout.Common.Tooling;
+using Fallout.Common.Tools.DocFX;
+using Fallout.Common.Tools.DotNet;
+using Fallout.Common.Tools.GitVersion;
+using Fallout.Common.Tools.ReportGenerator;
+using Fallout.Common.Utilities;
+using Fallout.Common.Utilities.Collections;
+using Fallout.GitHub;
+using Fallout.WebDocu;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,21 +16,21 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using static Nuke.Common.ChangeLog.ChangelogTasks;
-using static Nuke.Common.IO.XmlTasks;
-using static Nuke.Common.Tools.DocFX.DocFXTasks;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
-using static Nuke.GitHub.ChangeLogExtensions;
-using static Nuke.GitHub.GitHubTasks;
-using static Nuke.WebDocu.WebDocuTasks;
-using Nuke.Common.ProjectModel;
-using Nuke.Common.Tools.AzureKeyVault;
-using Nuke.Common.IO;
-using Nuke.Common.Tools.Teams;
-using Nuke.Common.Tools.Coverlet;
+using static Fallout.Common.ChangeLog.ChangelogTasks;
+using static Fallout.Common.IO.XmlTasks;
+using static Fallout.Common.Tools.DocFX.DocFXTasks;
+using static Fallout.Common.Tools.DotNet.DotNetTasks;
+using static Fallout.Common.Tools.ReportGenerator.ReportGeneratorTasks;
+using static Fallout.GitHub.ChangeLogExtensions;
+using static Fallout.GitHub.GitHubTasks;
+using static Fallout.WebDocu.WebDocuTasks;
+using Fallout.Common.ProjectModel;
+using Fallout.Common.Tools.AzureKeyVault;
+using Fallout.Common.IO;
+using Fallout.Common.Tools.Teams;
+using Fallout.Common.Tools.Coverlet;
 
-class Build : NukeBuild
+class Build : FalloutBuild
 {
     // Console application entry. Also defines the default target.
     public static int Main() => Execute<Build>(x => x.Compile);
