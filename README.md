@@ -31,7 +31,7 @@ CI builds are available via MyGet.
 
 ## Compatibility
 
-This project targets `netstandard2.0` and `net461`.
+This project targets `netstandard2.0` and `net462`. The latest .NET version is also supported via a dedicated target framework to leverage features not available in .NET Standard.
 
 ## Project Configuration
 
@@ -41,7 +41,7 @@ dotnet CLI tooling. This is scheduled to be fixed with the 2.0 release. In the m
 be added to the consumers `csproj`:
 
   ```xml
-<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+<PropertyGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 </PropertyGroup>
