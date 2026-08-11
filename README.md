@@ -31,9 +31,7 @@ CI builds are available via MyGet.
 
 ## Compatibility
 
-This project targets `netstandard2.0`, `netstandard1.1`, `net45` and `net40`. Due to .Net 4.5.2 being the currently latest supported version
-by Microsoft and the xUnit test suite, no tests are run for `net45` and `net451`.  
-The .NET 4.0 target is for compatibility reasons, it is not tested and requires .NET compilers for version 4.5 or newer to properly function.
+This project targets `netstandard2.0` and `net462`. The latest .NET version is also supported via a dedicated target framework to leverage features not available in .NET Standard.
 
 ## Project Configuration
 
@@ -43,7 +41,7 @@ dotnet CLI tooling. This is scheduled to be fixed with the 2.0 release. In the m
 be added to the consumers `csproj`:
 
   ```xml
-<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+<PropertyGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 </PropertyGroup>

@@ -2,6 +2,12 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v2.3.0:
+- The latest .NET Framework supported is now `net462`
+- Added a dedicated build target for `net10.0`
+- Switch build system to Fallout
+- Dropped tests for `net8.0` and addes tests for `net10.0`
+
 ## v2.2.0:
 - Dropped tests for `net6.0` and addes tests for `net8.0`
 - Added a new overload to the calculator which accepts an options object. Additionally, it is now possible to configure a special case that applies different handling for formulas that start with a negative power, e.g. `-2^2`. This would typically be parsed as `(-2)^2`, but with the new option, it can be configured to be parsed as `-(2^2)`. It is not recommended to use this option, since most other software (e.g. Microsoft Excel and Google Sheets) do also not behave in that way.
