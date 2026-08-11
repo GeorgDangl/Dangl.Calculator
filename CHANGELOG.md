@@ -2,8 +2,10 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
-## v2.2.1:
+## v2.3.0:
+- The latest .NET Framework supported is now `net461`
 - Switch build system to Fallout
+- Dropped tests for `net8.0` and addes tests for `net10.0`
 
 ## v2.2.0:
 - Dropped tests for `net6.0` and addes tests for `net8.0`
