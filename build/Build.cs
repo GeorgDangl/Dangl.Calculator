@@ -172,7 +172,7 @@ class Build : FalloutBuild
                 DotNetTest(x => x
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
                    .SetTestAdapterPath(".")
-                   .SetFramework("net8.0")
+                   .SetFramework("net10.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
                    // See here for more information:
                    // https://github.com/dotnet/cli/issues/9397
