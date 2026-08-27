@@ -112,7 +112,7 @@ class Build : FalloutBuild
         .Requires(() => CodeSigningCertificateName)
         .Executes(() =>
         {
-            var inputFiles = SourceDirectory.GlobFiles("**/*.dll", "**/*.exe").ToList();
+            var inputFiles = SourceDirectory.GlobFiles("**/*Calculator.dll").ToList();
             var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
             filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
             var azureSignArguments = string.Empty;
