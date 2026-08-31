@@ -1,73 +1,71 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Build Schema",
-  "$ref": "#/definitions/build",
   "definitions": {
-    "build": {
-      "type": "object",
+    "Host": {
+      "type": "string",
+      "enum": [
+        "AppVeyor",
+        "AzurePipelines",
+        "Bamboo",
+        "Bitbucket",
+        "Bitrise",
+        "GitHubActions",
+        "GitLab",
+        "Jenkins",
+        "Rider",
+        "SpaceAutomation",
+        "TeamCity",
+        "Terminal",
+        "TravisCI",
+        "VisualStudio",
+        "VSCode"
+      ]
+    },
+    "ExecutableTarget": {
+      "type": "string",
+      "enum": [
+        "BuildDocFxMetadata",
+        "BuildDocumentation",
+        "Clean",
+        "Compile",
+        "Coverage",
+        "LinuxTest",
+        "Pack",
+        "PublishGitHubRelease",
+        "Push",
+        "Restore",
+        "SignDlls",
+        "Test",
+        "UploadDocumentation"
+      ]
+    },
+    "Verbosity": {
+      "type": "string",
+      "description": "",
+      "enum": [
+        "Verbose",
+        "Normal",
+        "Minimal",
+        "Quiet"
+      ]
+    },
+    "FalloutBuild": {
       "properties": {
-        "Configuration": {
-          "type": "string"
-        },
         "Continue": {
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
-        },
-        "DanglCiCdTeamsWebhookUrl": {
-          "type": "string"
-        },
-        "DocuApiKey": {
-          "type": "string"
-        },
-        "DocuBaseUrl": {
-          "type": "string"
-        },
-        "GitHubAuthenticationToken": {
-          "type": "string"
         },
         "Help": {
           "type": "boolean",
           "description": "Shows the help text for this build assembly"
         },
         "Host": {
-          "type": "string",
           "description": "Host for execution. Default is 'automatic'",
-          "enum": [
-            "AppVeyor",
-            "AzurePipelines",
-            "Bamboo",
-            "Bitbucket",
-            "Bitrise",
-            "GitHubActions",
-            "GitLab",
-            "Jenkins",
-            "Rider",
-            "SpaceAutomation",
-            "TeamCity",
-            "Terminal",
-            "TravisCI",
-            "VisualStudio",
-            "VSCode"
-          ]
-        },
-        "KeyVault": {
-          "type": "string"
-        },
-        "KeyVaultBaseUrl": {
-          "type": "string"
-        },
-        "KeyVaultClientId": {
-          "type": "string"
-        },
-        "KeyVaultClientSecret": {
-          "type": "string"
+          "$ref": "#/definitions/Host"
         },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
-        },
-        "NuGetApiKey": {
-          "type": "string"
         },
         "Partition": {
           "type": "string",
@@ -84,12 +82,6 @@
             "type": "string"
           }
         },
-        "PublicMyGetApiKey": {
-          "type": "string"
-        },
-        "PublicMyGetSource": {
-          "type": "string"
-        },
         "Root": {
           "type": "string",
           "description": "Root directory during build execution"
@@ -98,59 +90,89 @@
           "type": "array",
           "description": "List of targets to be skipped. Empty list skips all dependencies",
           "items": {
-            "type": "string",
-            "enum": [
-              "BuildDocFxMetadata",
-              "BuildDocumentation",
-              "Clean",
-              "Compile",
-              "Coverage",
-              "LinuxTest",
-              "Pack",
-              "PublishGitHubRelease",
-              "Push",
-              "Restore",
-              "Test",
-              "UploadDocumentation"
-            ]
+            "$ref": "#/definitions/ExecutableTarget"
           }
-        },
-        "Solution": {
-          "type": "string",
-          "description": "Path to a solution file that is automatically loaded. Default is Dangl.Calculator.sln"
         },
         "Target": {
           "type": "array",
           "description": "List of targets to be invoked. Default is '{default_target}'",
           "items": {
-            "type": "string",
-            "enum": [
-              "BuildDocFxMetadata",
-              "BuildDocumentation",
-              "Clean",
-              "Compile",
-              "Coverage",
-              "LinuxTest",
-              "Pack",
-              "PublishGitHubRelease",
-              "Push",
-              "Restore",
-              "Test",
-              "UploadDocumentation"
-            ]
+            "$ref": "#/definitions/ExecutableTarget"
           }
         },
         "Verbosity": {
-          "type": "string",
           "description": "Logging verbosity during build execution. Default is 'Normal'",
-          "enum": [
-            "Minimal",
-            "Normal",
-            "Quiet",
-            "Verbose"
-          ]
+          "$ref": "#/definitions/Verbosity"
+        },
+        "BuildProjectFile": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "Path to the build project (.csproj) relative to the repository root. Defaults to 'build/_build.csproj' when unset. Read by the Fallout global tool's in-tool runner."
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "CodeSigningCertificateKeyVaultBaseUrl": {
+          "type": "string"
+        },
+        "CodeSigningCertificateName": {
+          "type": "string"
+        },
+        "CodeSigningKeyVaultTenantId": {
+          "type": "string"
+        },
+        "Configuration": {
+          "type": "string"
+        },
+        "DanglCiCdTeamsWebhookUrl": {
+          "type": "string"
+        },
+        "DanglPublicFeedSource": {
+          "type": "string"
+        },
+        "DocuApiKey": {
+          "type": "string"
+        },
+        "DocuBaseUrl": {
+          "type": "string"
+        },
+        "FeedzAccessToken": {
+          "type": "string"
+        },
+        "GitHubAuthenticationToken": {
+          "type": "string"
+        },
+        "KeyVault": {
+          "type": "string"
+        },
+        "KeyVaultBaseUrl": {
+          "type": "string"
+        },
+        "KeyVaultClientId": {
+          "type": "string"
+        },
+        "KeyVaultClientSecret": {
+          "type": "string"
+        },
+        "KeyVaultTenantId": {
+          "type": "string"
+        },
+        "NuGetApiKey": {
+          "type": "string"
+        },
+        "Solution": {
+          "type": "string",
+          "description": "Path to a solution file that is automatically loaded. Default is Dangl.Calculator.sln"
+        }
+      }
+    },
+    {
+      "$ref": "#/definitions/FalloutBuild"
+    }
+  ]
 }

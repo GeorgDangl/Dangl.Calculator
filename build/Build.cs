@@ -105,13 +105,15 @@ class Build : FalloutBuild
 
     Target SignDlls => _ => _
         .DependsOn(Compile)
-        .Requires(() => CodeSigningCertificateKeyVaultBaseUrl)
-        .Requires(() => KeyVaultClientId)
-        .Requires(() => KeyVaultClientSecret)
-        .Requires(() => CodeSigningKeyVaultTenantId)
-        .Requires(() => CodeSigningCertificateName)
+        .OnlyWhenDynamic(() => IsServerBuild)
         .Executes(() =>
         {
+            Assert.NotNull(CodeSigningCertificateKeyVaultBaseUrl);
+            Assert.NotNull(KeyVaultClientId);
+            Assert.NotNull(KeyVaultClientSecret);
+            Assert.NotNull(CodeSigningKeyVaultTenantId);
+            Assert.NotNull(CodeSigningCertificateName);
+
             var inputFiles = SourceDirectory.GlobFiles("**/*Calculator.dll").ToList();
             var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
             filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
