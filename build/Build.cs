@@ -114,7 +114,7 @@ class Build : FalloutBuild
             Assert.NotNull(CodeSigningKeyVaultTenantId);
             Assert.NotNull(CodeSigningCertificateName);
 
-            var inputFiles = SourceDirectory.GlobFiles("**/*Calculator.dll").ToList();
+            var inputFiles = (SourceDirectory / "Dangl.Calculator" / "bin" / Configuration).GlobFiles("**/*Calculator.dll").ToList();
             var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
             filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
             var azureSignArguments = string.Empty;
