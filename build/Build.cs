@@ -1,9 +1,14 @@
 using Fallout.Common;
 using Fallout.Common.Git;
+using Fallout.Common.IO;
+using Fallout.Common.ProjectModel;
 using Fallout.Common.Tooling;
+using Fallout.Common.Tools.AzureKeyVault;
+using Fallout.Common.Tools.Coverlet;
 using Fallout.Common.Tools.DocFX;
 using Fallout.Common.Tools.DotNet;
 using Fallout.Common.Tools.GitVersion;
+using Fallout.Common.Tools.MSBuild;
 using Fallout.Common.Tools.ReportGenerator;
 using Fallout.Common.Utilities;
 using Fallout.Common.Utilities.Collections;
@@ -24,10 +29,6 @@ using static Fallout.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Fallout.GitHub.ChangeLogExtensions;
 using static Fallout.GitHub.GitHubTasks;
 using static Fallout.WebDocu.WebDocuTasks;
-using Fallout.Common.ProjectModel;
-using Fallout.Common.Tools.AzureKeyVault;
-using Fallout.Common.IO;
-using Fallout.Common.Tools.Coverlet;
 
 class Build : FalloutBuild
 {
@@ -153,14 +154,9 @@ class Build : FalloutBuild
             {
                 DotNetTest(x => x
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
-                   .SetTestAdapterPath(".")
                    .SetFramework("net10.0")
                    .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
-                   // See here for more information:
-                   // https://github.com/dotnet/cli/issues/9397
-                   // There's a bug where the 'dotnet test' process hangs for 15 minutes after
-                   // test completion
-                   .SetProcessAdditionalArguments("-nodereuse:false"));
+                   .AddProcessAdditionalArguments($"-- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / "testresults-linux.xml"}"));
             }
             finally
             {
