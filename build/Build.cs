@@ -163,7 +163,7 @@ class Build : FalloutBuild
             }
         });
 
-    Target Tests => _ => _
+    Target Coverage => _ => _
         .DependsOn(Compile)
         .Executes(() =>
         {
@@ -184,7 +184,7 @@ class Build : FalloutBuild
                             return targetFrameworks.Select(targetFramework => cc
                                 .SetProjectFile(testProject)
                                 .SetFramework(targetFramework)
-                                .AddProcessAdditionalArguments($"-- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
+                                .AddProcessAdditionalArguments($"--coverlet --coverlet-output-format cobertura --coverlet-file-prefix {targetFramework} --coverlet-include [Dangl.Calculator]* -- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
                         }))
                     ,
                             degreeOfParallelism: Environment.ProcessorCount,
@@ -195,6 +195,15 @@ class Build : FalloutBuild
                 EnsureTestFilesHaveUniqueTimestamp();
 
                 PrependFrameworkToTestresults();
+
+                // Merge coverage reports, otherwise they might not be completely picked up by Jenkins
+                ReportGenerator(c => c
+                    .SetFramework("net7.0")
+                    .SetReports(OutputDirectory / "**/*cobertura*.xml")
+                    .SetTargetDirectory(OutputDirectory)
+                    .SetReportTypes(ReportTypes.Cobertura));
+
+                MakeSourceEntriesRelativeInCoberturaFormat(OutputDirectory / "Cobertura.xml");
             }
         });
 
