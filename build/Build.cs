@@ -145,32 +145,6 @@ class Build : FalloutBuild
                 .SetVersion(GitVersion.NuGetVersion));
         });
 
-    Target Test => _ => _
-         .DependsOn(Compile)
-         .Executes(() =>
-         {
-             var testProjects = (SolutionDirectory / "test").GlobFiles("**/*.csproj");
-             var testRun = 1;
-
-             try
-             {
-                 DotNetTest(x => x
-                     .SetNoBuild(true)
-                     .SetTestAdapterPath(".")
-                     .CombineWith(cc => testProjects
-                         .SelectMany(testProject => GetTestFrameworksForProjectFile(testProject)
-                             .Select(targetFramework => cc
-                                 .SetFramework(targetFramework)
-                                 .SetProcessWorkingDirectory(Path.GetDirectoryName(testProject))
-                                 .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
-                                 degreeOfParallelism: Environment.ProcessorCount);
-             }
-             finally
-             {
-                 PrependFrameworkToTestresults();
-             }
-         });
-
     Target LinuxTest => _ => _
         .DependsOn(Clean)
         .Executes(() =>
@@ -194,7 +168,7 @@ class Build : FalloutBuild
             }
         });
 
-    Target Coverage => _ => _
+    Target Tests => _ => _
         .DependsOn(Compile)
         .Executes(() =>
         {
@@ -204,14 +178,8 @@ class Build : FalloutBuild
             try
             {
                 DotNetTest(c => c
-                    .SetDataCollector("XPlat Code Coverage")
                     .SetResultsDirectory(OutputDirectory)
-                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format", "cobertura")
-                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include", "[Dangl.Calculator]*")
-                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute", "Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute")
                     .EnableNoBuild()
-                    .SetTestAdapterPath(".")
-                    .AddProcessAdditionalArguments("-- RunConfiguration.DisableAppDomain=true")
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
                         {
@@ -220,9 +188,8 @@ class Build : FalloutBuild
                             var targetFrameworks = GetTestFrameworksForProjectFile(testProject);
                             return targetFrameworks.Select(targetFramework => cc
                                 .SetProjectFile(testProject)
-                                .SetCoverletOutput($"{OutputDirectory / projectName}-{targetFramework}_coverage.xml")
                                 .SetFramework(targetFramework)
-                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
+                                .AddProcessAdditionalArguments($"-- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
                         }))
                     ,
                             degreeOfParallelism: Environment.ProcessorCount,
@@ -233,16 +200,6 @@ class Build : FalloutBuild
                 EnsureTestFilesHaveUniqueTimestamp();
 
                 PrependFrameworkToTestresults();
-
-                // Merge coverage reports, otherwise they might not be completely
-                // picked up by Jenkins
-                ReportGenerator(c => c
-                    .SetFramework("net6.0")
-                    .SetReports(OutputDirectory / "**/*cobertura.xml")
-                    .SetTargetDirectory(OutputDirectory)
-                    .SetReportTypes(ReportTypes.Cobertura));
-
-                MakeSourceEntriesRelativeInCoberturaFormat(OutputDirectory / "Cobertura.xml");
             }
         });
 

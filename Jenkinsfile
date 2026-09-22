@@ -43,7 +43,7 @@ pipeline {
 		        }
                 stage ('Windows Test') {
                     steps {
-                        powershell './build.ps1 Coverage -configuration Debug'
+                        powershell './build.ps1 Tests -configuration Debug'
                     }
                     post {
                         always {
@@ -67,7 +67,6 @@ pipeline {
                                 tools: [
                                     xUnitDotNet(deleteOutputFiles: true, failIfNotNew: true, pattern: '**/*testresults.xml', stopProcessingIfError: true)
                                 ])
-                            recordCoverage(tools: [[parser: 'COBERTURA', pattern: 'output/Cobertura.xml']])
                         }
                     }
                 }
