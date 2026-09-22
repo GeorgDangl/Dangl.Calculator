@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v2.3.2:
+- The generated dlls are now signed with an Authenticode certificate
+
 ## v2.3.1:
 - Update build script
 

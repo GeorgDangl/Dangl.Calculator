@@ -1,9 +1,13 @@
 using Fallout.Common;
 using Fallout.Common.Git;
+using Fallout.Common.IO;
+using Fallout.Common.ProjectModel;
 using Fallout.Common.Tooling;
-using Fallout.Common.Tools.DocFX;
+using Fallout.Common.Tools.AzureKeyVault;
+using Fallout.Common.Tools.Coverlet;
 using Fallout.Common.Tools.DotNet;
 using Fallout.Common.Tools.GitVersion;
+using Fallout.Common.Tools.MSBuild;
 using Fallout.Common.Tools.ReportGenerator;
 using Fallout.Common.Utilities;
 using Fallout.Common.Utilities.Collections;
@@ -18,16 +22,11 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using static Fallout.Common.ChangeLog.ChangelogTasks;
 using static Fallout.Common.IO.XmlTasks;
-using static Fallout.Common.Tools.DocFX.DocFXTasks;
 using static Fallout.Common.Tools.DotNet.DotNetTasks;
 using static Fallout.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Fallout.GitHub.ChangeLogExtensions;
 using static Fallout.GitHub.GitHubTasks;
 using static Fallout.WebDocu.WebDocuTasks;
-using Fallout.Common.ProjectModel;
-using Fallout.Common.Tools.AzureKeyVault;
-using Fallout.Common.IO;
-using Fallout.Common.Tools.Coverlet;
 
 class Build : FalloutBuild
 {
@@ -60,6 +59,12 @@ class Build : FalloutBuild
     [AzureKeyVaultSecret("DanglCalculator-DocuApiKey")] readonly string DocuApiKey;
     [AzureKeyVaultSecret] readonly string GitHubAuthenticationToken;
     [AzureKeyVaultSecret] readonly string DanglCiCdTeamsWebhookUrl;
+    [AzureKeyVaultSecret] string CodeSigningCertificateName;
+    [AzureKeyVaultSecret] string CodeSigningCertificateKeyVaultBaseUrl;
+    [AzureKeyVaultSecret] string CodeSigningKeyVaultTenantId;
+
+    [NuGetPackage("AzureSignTool", "tools/net10.0/any/AzureSignTool.dll")]
+    readonly Tool AzureSign;
 
     [Solution("Dangl.Calculator.sln")] readonly Solution Solution;
     AbsolutePath SolutionDirectory => Solution.Directory;
@@ -97,8 +102,34 @@ class Build : FalloutBuild
                     .SetInformationalVersion(GitVersion.InformationalVersion));
             });
 
-    Target Pack => _ => _
+    Target SignDlls => _ => _
         .DependsOn(Compile)
+        .OnlyWhenDynamic(() => IsServerBuild)
+        .Executes(() =>
+        {
+            Assert.NotNull(CodeSigningCertificateKeyVaultBaseUrl);
+            Assert.NotNull(KeyVaultClientId);
+            Assert.NotNull(KeyVaultClientSecret);
+            Assert.NotNull(CodeSigningKeyVaultTenantId);
+            Assert.NotNull(CodeSigningCertificateName);
+
+            var inputFiles = (SourceDirectory / "Dangl.Calculator" / "bin" / Configuration).GlobFiles("**/*Calculator.dll").ToList();
+            var filesListPath = OutputDirectory / $"{Guid.NewGuid()}.txt";
+            filesListPath.WriteAllText(inputFiles.Select(f => f.ToString()).Join(Environment.NewLine) + Environment.NewLine);
+            var azureSignArguments = string.Empty;
+            azureSignArguments += "sign";
+            azureSignArguments += $" --azure-key-vault-url \"{CodeSigningCertificateKeyVaultBaseUrl}\"";
+            azureSignArguments += $" --azure-key-vault-client-id \"{KeyVaultClientId}\"";
+            azureSignArguments += $" --azure-key-vault-client-secret \"{KeyVaultClientSecret}\"";
+            azureSignArguments += $" --azure-key-vault-tenant-id \"{CodeSigningKeyVaultTenantId}\"";
+            azureSignArguments += $" --azure-key-vault-certificate \"{CodeSigningCertificateName}\"";
+            azureSignArguments += $" --input-file-list \"{filesListPath}\"";
+            azureSignArguments += $" --timestamp-rfc3161 \"{"http://timestamp.digicert.com"}\"";
+            AzureSign($"{azureSignArguments:nq}");
+        });
+
+    Target Pack => _ => _
+        .DependsOn(SignDlls)
         .Executes(() =>
         {
             var changeLog = GetCompleteChangeLog(ChangeLogFile)
@@ -113,32 +144,6 @@ class Build : FalloutBuild
                 .SetVersion(GitVersion.NuGetVersion));
         });
 
-    Target Test => _ => _
-         .DependsOn(Compile)
-         .Executes(() =>
-         {
-             var testProjects = (SolutionDirectory / "test").GlobFiles("**/*.csproj");
-             var testRun = 1;
-
-             try
-             {
-                 DotNetTest(x => x
-                     .SetNoBuild(true)
-                     .SetTestAdapterPath(".")
-                     .CombineWith(cc => testProjects
-                         .SelectMany(testProject => GetTestFrameworksForProjectFile(testProject)
-                             .Select(targetFramework => cc
-                                 .SetFramework(targetFramework)
-                                 .SetProcessWorkingDirectory(Path.GetDirectoryName(testProject))
-                                 .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{testRun++}_testresults-{targetFramework}.xml"}")))),
-                                 degreeOfParallelism: Environment.ProcessorCount);
-             }
-             finally
-             {
-                 PrependFrameworkToTestresults();
-             }
-         });
-
     Target LinuxTest => _ => _
         .DependsOn(Clean)
         .Executes(() =>
@@ -147,14 +152,8 @@ class Build : FalloutBuild
             {
                 DotNetTest(x => x
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
-                   .SetTestAdapterPath(".")
                    .SetFramework("net10.0")
-                   .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
-                   // See here for more information:
-                   // https://github.com/dotnet/cli/issues/9397
-                   // There's a bug where the 'dotnet test' process hangs for 15 minutes after
-                   // test completion
-                   .SetProcessAdditionalArguments("-nodereuse:false"));
+                   .AddProcessAdditionalArguments($"-- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / "testresults-linux.xml"}"));
             }
             finally
             {
@@ -172,14 +171,8 @@ class Build : FalloutBuild
             try
             {
                 DotNetTest(c => c
-                    .SetDataCollector("XPlat Code Coverage")
                     .SetResultsDirectory(OutputDirectory)
-                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format", "cobertura")
-                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include", "[Dangl.Calculator]*")
-                    .AddRunSetting("DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute", "Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute")
                     .EnableNoBuild()
-                    .SetTestAdapterPath(".")
-                    .AddProcessAdditionalArguments("-- RunConfiguration.DisableAppDomain=true")
                     .CombineWith(cc => testProjects
                         .SelectMany(testProject =>
                         {
@@ -188,9 +181,8 @@ class Build : FalloutBuild
                             var targetFrameworks = GetTestFrameworksForProjectFile(testProject);
                             return targetFrameworks.Select(targetFramework => cc
                                 .SetProjectFile(testProject)
-                                .SetCoverletOutput($"{OutputDirectory / projectName}-{targetFramework}_coverage.xml")
                                 .SetFramework(targetFramework)
-                                .SetLoggers($"xunit;LogFilePath={OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
+                                .AddProcessAdditionalArguments($"--coverlet --coverlet-output-format cobertura --coverlet-file-prefix {targetFramework} --coverlet-include [Dangl.Calculator]* -- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / $"{projectName}-{targetFramework}_testresults.xml"}"));
                         }))
                     ,
                             degreeOfParallelism: Environment.ProcessorCount,
@@ -202,11 +194,10 @@ class Build : FalloutBuild
 
                 PrependFrameworkToTestresults();
 
-                // Merge coverage reports, otherwise they might not be completely
-                // picked up by Jenkins
+                // Merge coverage reports, otherwise they might not be completely picked up by Jenkins
                 ReportGenerator(c => c
-                    .SetFramework("net6.0")
-                    .SetReports(OutputDirectory / "**/*cobertura.xml")
+                    .SetFramework("net7.0")
+                    .SetReports(OutputDirectory / "**/*cobertura*.xml")
                     .SetTargetDirectory(OutputDirectory)
                     .SetReportTypes(ReportTypes.Cobertura));
 
@@ -334,7 +325,10 @@ class Build : FalloutBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            DocFXMetadata(x => x.SetProjects(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net9.0/any/docfx.dll");
+            DotNet($"{docFxPath} metadata {DocFxFile}", environmentVariables: environmentVariables);
         });
 
     Target BuildDocumentation => _ => _
@@ -350,11 +344,13 @@ class Build : FalloutBuild
 
             File.Copy(SolutionDirectory / "README.md", SolutionDirectory / "index.md");
 
-            DocFXBuild(x => x.SetConfigFile(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net9.0/any/docfx.dll");
+            DotNet($"{docFxPath} {DocFxFile}", environmentVariables: environmentVariables);
 
             File.Delete(SolutionDirectory / "index.md");
             Directory.Delete(SolutionDirectory / "api", true);
-            Directory.Delete(SolutionDirectory / "obj", true);
         });
 
     Target UploadDocumentation => _ => _
