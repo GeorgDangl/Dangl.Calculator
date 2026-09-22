@@ -11,6 +11,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <IsPackable>false</IsPackable>
+    <OutputType>exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
