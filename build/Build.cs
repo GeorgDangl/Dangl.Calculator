@@ -155,7 +155,6 @@ class Build : FalloutBuild
                 DotNetTest(x => x
                    .SetProcessWorkingDirectory(SolutionDirectory / "test" / "Dangl.Calculator.Tests")
                    .SetFramework("net10.0")
-                   .SetLoggers($"xunit;LogFilePath={OutputDirectory / "testresults-linux.xml"}")
                    .AddProcessAdditionalArguments($"-- --report-spekt-xunit --report-spekt-xunit-filename {OutputDirectory / "testresults-linux.xml"}"));
             }
             finally
