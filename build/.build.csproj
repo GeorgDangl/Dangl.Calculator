@@ -16,11 +16,7 @@
     <PackageReference Include="Dangl.Fallout.WebDocu" Version="8.0.0" />
     <PackageReference Include="Dangl.Fallout.GitHub" Version="8.0.0" />
     <PackageDownload Include="AzureSignTool" Version="[7.0.1]" />
-    <PackageReference Include="docfx.console" Version="2.59.4">
-      <ExcludeAssets>build</ExcludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageDownload Include="docfx" Version="[2.78.5]" />
     <PackageReference Include="ReportGenerator" Version="5.5.11" />
   </ItemGroup>
 

@@ -5,7 +5,6 @@ using Fallout.Common.ProjectModel;
 using Fallout.Common.Tooling;
 using Fallout.Common.Tools.AzureKeyVault;
 using Fallout.Common.Tools.Coverlet;
-using Fallout.Common.Tools.DocFX;
 using Fallout.Common.Tools.DotNet;
 using Fallout.Common.Tools.GitVersion;
 using Fallout.Common.Tools.MSBuild;
@@ -23,7 +22,6 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using static Fallout.Common.ChangeLog.ChangelogTasks;
 using static Fallout.Common.IO.XmlTasks;
-using static Fallout.Common.Tools.DocFX.DocFXTasks;
 using static Fallout.Common.Tools.DotNet.DotNetTasks;
 using static Fallout.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Fallout.GitHub.ChangeLogExtensions;
@@ -327,7 +325,10 @@ class Build : FalloutBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            DocFXMetadata(x => x.SetProjects(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net9.0/any/docfx.dll");
+            DotNet($"{docFxPath} metadata {DocFxFile}", environmentVariables: environmentVariables);
         });
 
     Target BuildDocumentation => _ => _
@@ -343,11 +344,13 @@ class Build : FalloutBuild
 
             File.Copy(SolutionDirectory / "README.md", SolutionDirectory / "index.md");
 
-            DocFXBuild(x => x.SetConfigFile(DocFxFile));
+            var environmentVariables = EnvironmentInfo.Variables.ToDictionary();
+            environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
+            var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net9.0/any/docfx.dll");
+            DotNet($"{docFxPath} {DocFxFile}", environmentVariables: environmentVariables);
 
             File.Delete(SolutionDirectory / "index.md");
             Directory.Delete(SolutionDirectory / "api", true);
-            Directory.Delete(SolutionDirectory / "obj", true);
         });
 
     Target UploadDocumentation => _ => _
