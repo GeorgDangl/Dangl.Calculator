@@ -66,6 +66,53 @@ public void Example()
     // true
 }
 ```
+
+## Decimal Calculations
+
+Use `Calculator.CalculateDecimal(...)` for decimal arithmetic without conversions through `double`.
+The existing `Calculate(...)` API and its behavior are unchanged.
+
+```csharp
+var calculation = Calculator.CalculateDecimal("0.1+0.2-0.3");
+// calculation.IsValid == true
+// calculation.Result == 0m
+
+var substituted = Calculator.CalculateDecimal("#price*#quantity", name =>
+    name == "#price" ? 0.1m : name == "#quantity" ? 3m : (decimal?)null);
+// substituted.Result == 0.3m
+```
+
+`CalculateDecimal` supports the same formula syntax and functions as `Calculate`. Its overloads accept
+`Func<string, decimal?>` substitution resolvers and `Func<RangeSubstitution, decimal?>` range resolvers.
+Use `DecimalCalculatorOptions` to supply both resolvers and configure
+`DetectUnaryMinusInPowersAtStartOfFormula`, which defaults to `false` just as in `CalculatorOptions`.
+Omitted resolvers and callbacks returning `null` produce an invalid result when the formula requires them.
+Exceptions thrown by your callbacks propagate to the caller.
+
+The returned `DecimalCalculationResult` has the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `IsValid` | `bool` | Whether the formula was successfully calculated |
+| `Result` | `decimal?` | The calculated value, or `null` for an invalid calculation |
+| `ErrorPosition` | `int` | Zero-based character position of the error, or `-1` when none is available |
+| `ErrorMessage` | `string` | Syntax, substitution or numeric error details; `null` for a valid calculation |
+
+Decimal provides approximately 28-29 significant digits, a maximum magnitude of
+`79,228,162,514,264,337,593,543,950,335`, and a smallest positive value of `0.0000000000000000000000000001`.
+It is not arbitrary-precision arithmetic: literals with excess precision and arithmetic results are
+rounded to the available decimal precision, and very small values can round to zero.
+`ROUND` and `ROUNDK` use midpoint-to-even rounding; `ROUNDK` accepts 0 through 28 decimal places.
+Division by zero, overflow and functions outside their real-valued domains return `IsValid == false`
+with a `null` result, rather than `NaN` or infinity.
+
+Scientific functions are implemented without additional NuGet dependencies. They use the built-in
+`BigInteger` type for base-10 fixed-point calculations with guard digits, then round to a decimal.
+They remain numerical approximations, not symbolic or exact calculations.
+Trigonometric functions use radians; `PI` and `E` are decimal constants.
+Fractional powers require a nonnegative base; the nth-root operators additionally support negative
+values when their degree is an odd integer.
+
 ## Supported functions
 
 | Expression                               |                                       |

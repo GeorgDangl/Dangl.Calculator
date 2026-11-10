@@ -35,4 +35,8 @@
     <Antlr4 Include="Calculator.g4" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+
 </Project>

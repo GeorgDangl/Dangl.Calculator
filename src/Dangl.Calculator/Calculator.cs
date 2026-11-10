@@ -7,10 +7,10 @@ namespace Dangl.Calculator
     /// <summary>
     ///     This class provides functionality to calculate a mathematical expression from a string.
     /// </summary>
-    public static class Calculator
+    public static partial class Calculator
     {
         /// <summary>
-        ///     This takes a string as input and returns the calculated result as decimal.
+        ///     This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         public static CalculationResult Calculate(string formula)
@@ -19,7 +19,7 @@ namespace Dangl.Calculator
         }
 
         /// <summary>
-        ///     This takes a string as input and returns the calculated result as decimal.
+        ///     This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         /// <param name="substitutionResolver">
@@ -32,7 +32,7 @@ namespace Dangl.Calculator
         }
 
         /// <summary>
-        ///     This takes a string as input and returns the calculated result as decimal.
+        ///     This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         /// <param name="substitutionResolver">
@@ -49,7 +49,7 @@ namespace Dangl.Calculator
         }
 
         /// <summary>
-        ///    This takes a string as input and returns the calculated result as decimal.
+        ///    This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         /// <param name="options"></param>
@@ -87,35 +87,11 @@ namespace Dangl.Calculator
                     Result = 0
                 };
             }
-            var inputStream = new AntlrInputStream(formula);
-            var lexer = new CalculatorLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new CalculatorParser(tokenStream);
-
-            // Removing default error listeners due to noise in debug
-            lexer.RemoveErrorListeners();
-            parser.RemoveErrorListeners();
-            // But adding the custom one
-            var customErrorListener = new CalculatorErrorListener();
-            parser.AddErrorListener(customErrorListener);
+            var calculatorExpression = ParseExpression(formula, out var tokenStream, out var customErrorListener);
             var visitor = new CalculatorVisitor(substitutionResolver,
                 rangeResolver,
                 customErrorListener,
                 detectUnaryMinusInPowersAtStartOfFormula);
-
-            CalculatorParser.ExpressionContext calculatorExpression;
-            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
-            try
-            {
-                calculatorExpression = parser.calculator().expression();
-            }
-            catch
-            {
-                tokenStream.Reset();
-                parser.Reset();
-                parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
-                calculatorExpression = parser.calculator().expression();
-            }
 
             var result = visitor.Visit(calculatorExpression);
             var isValid = customErrorListener.IsValid;
@@ -128,12 +104,7 @@ namespace Dangl.Calculator
 
             if (!isValid && !secondRun)
             {
-                var cleanedFormula = string.Empty;
-                var tokenList = tokenStream.GetTokens().ToList();
-                for (var i = 0; i < tokenList.Count - 1; i++)
-                {
-                    cleanedFormula += tokenList[i].Text;
-                }
+                var cleanedFormula = CleanFormula(tokenStream);
                 var originalErrorLocation = errorLocation;
                 var retriedResult = CalculateResult(cleanedFormula,
                     true,
@@ -156,6 +127,43 @@ namespace Dangl.Calculator
                 ErrorPosition = errorLocation,
                 ErrorMessage = isValid ? null : errorMessage
             };
+        }
+
+        private static CalculatorParser.ExpressionContext ParseExpression(string formula,
+            out CommonTokenStream tokenStream,
+            out CalculatorErrorListener errorListener)
+        {
+            var lexer = new CalculatorLexer(new AntlrInputStream(formula));
+            tokenStream = new CommonTokenStream(lexer);
+            var parser = new CalculatorParser(tokenStream);
+            lexer.RemoveErrorListeners();
+            parser.RemoveErrorListeners();
+            errorListener = new CalculatorErrorListener();
+            parser.AddErrorListener(errorListener);
+
+            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
+            try
+            {
+                return parser.calculator().expression();
+            }
+            catch
+            {
+                tokenStream.Reset();
+                parser.Reset();
+                parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
+                return parser.calculator().expression();
+            }
+        }
+
+        private static string CleanFormula(CommonTokenStream tokenStream)
+        {
+            var cleanedFormula = string.Empty;
+            var tokenList = tokenStream.GetTokens().ToList();
+            for (var i = 0; i < tokenList.Count - 1; i++)
+            {
+                cleanedFormula += tokenList[i].Text;
+            }
+            return cleanedFormula;
         }
     }
 }
