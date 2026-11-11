@@ -2,7 +2,7 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
-## Unreleased
+## v2.4.0
 - Added `Calculator.CalculateDecimal` with decimal results, substitutions, ranges and options, without changing the existing double API.
 - Added decimal-native scientific functions without additional NuGet dependencies.
 - Decimal calculations report syntax, unresolved-value, division-by-zero, domain and overflow errors with a null result.
