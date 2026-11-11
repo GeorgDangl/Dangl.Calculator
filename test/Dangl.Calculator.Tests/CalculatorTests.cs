@@ -379,22 +379,22 @@ namespace Dangl.Calculator.Tests
                 RunTest("PI", Math.PI);
             }
 
-            /// <summary>
-            /// Caution: The ToString("R") format is needed because otherwise, the ToString() method will lose decimal digits at the end, resulting in an off by ~10^290 error=)
-            /// </summary>
             [Fact]
-            public void Calc_DoubleAlmostMaxValueExponent()
+            public void RejectsDoubleAlmostMaxValueExponent()
             {
-                RunTest((0.99*double.MaxValue).ToString("R"), 0.99*double.MaxValue);
+                var result = Calculator.Calculate((0.99*double.MaxValue).ToString("R"));
+                Assert.False(result.IsValid);
+                Assert.True(double.IsNaN(result.Result));
+                Assert.False(string.IsNullOrWhiteSpace(result.ErrorMessage));
             }
 
-            /// <summary>
-            /// Caution: The ToString("R") format is needed because otherwise, the ToString() method will lose decimal digits at the end, resulting in an off by ~10^290 error=)
-            /// </summary>
             [Fact]
-            public void Calc_DoubleAlmostMinValueExponent()
+            public void RejectsDoubleAlmostMinValueExponent()
             {
-                RunTest((0.99*double.MinValue).ToString("R"), 0.99*double.MinValue);
+                var result = Calculator.Calculate((0.99*double.MinValue).ToString("R"));
+                Assert.False(result.IsValid);
+                Assert.True(double.IsNaN(result.Result));
+                Assert.False(string.IsNullOrWhiteSpace(result.ErrorMessage));
             }
 
             [Fact]
@@ -954,8 +954,9 @@ namespace Dangl.Calculator.Tests
             public void Arctan2_1()
             {
                 var formula = "arctan2(0;-0)";
-                var expected = Math.PI;
+                var expected = 0;
                 var actual = Calculator.Calculate(formula);
+                Assert.True(actual.IsValid);
                 Assert.True(Math.Abs(expected - actual.Result) < 0.001);
             }
 
@@ -1315,14 +1316,14 @@ namespace Dangl.Calculator.Tests
             }
         }
 
-        public class IsInfinityForDivisionByZero
+        public class IsInvalidForDivisionByZero
         {
             [Fact]
             public void Test_01()
             {
                 var formula = "1/0";
                 var result = Calculator.Calculate(formula);
-                Assert.Equal(double.PositiveInfinity, result.Result);
+                Assert.True(double.IsNaN(result.Result));
                 Assert.False(result.IsValid);
             }
 
@@ -1331,7 +1332,7 @@ namespace Dangl.Calculator.Tests
             {
                 var formula = "-1/0";
                 var result = Calculator.Calculate(formula);
-                Assert.Equal(double.NegativeInfinity, result.Result);
+                Assert.True(double.IsNaN(result.Result));
                 Assert.False(result.IsValid);
             }
 
@@ -1340,7 +1341,7 @@ namespace Dangl.Calculator.Tests
             {
                 var formula = "floor(1/0)";
                 var result = Calculator.Calculate(formula);
-                Assert.Equal(double.PositiveInfinity, result.Result);
+                Assert.True(double.IsNaN(result.Result));
                 Assert.False(result.IsValid);
             }
         }

@@ -1,5 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Dangl.Calculator
@@ -7,19 +9,23 @@ namespace Dangl.Calculator
     /// <summary>
     ///     This class provides functionality to calculate a mathematical expression from a string.
     /// </summary>
-    public static class Calculator
+    /// <remarks>
+    /// All formulas are evaluated using decimal arithmetic. Calculate converts only the final result to double.
+    /// Double substitution and range values are converted using 15 significant decimal digits.
+    /// </remarks>
+    public static partial class Calculator
     {
         /// <summary>
-        ///     This takes a string as input and returns the calculated result as decimal.
+        ///     This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         public static CalculationResult Calculate(string formula)
         {
-            return CalculateResult(formula, false, _ => null, _ => null, false);
+            return CalculateResult(formula, null, null, false);
         }
 
         /// <summary>
-        ///     This takes a string as input and returns the calculated result as decimal.
+        ///     This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         /// <param name="substitutionResolver">
@@ -28,11 +34,11 @@ namespace Dangl.Calculator
         /// </param>
         public static CalculationResult Calculate(string formula, Func<string, double?> substitutionResolver)
         {
-            return CalculateResult(formula, false, substitutionResolver, _ => null, false);
+            return CalculateResult(formula, substitutionResolver, null, false);
         }
 
         /// <summary>
-        ///     This takes a string as input and returns the calculated result as decimal.
+        ///     This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         /// <param name="substitutionResolver">
@@ -45,117 +51,119 @@ namespace Dangl.Calculator
             Func<string, double?> substitutionResolver,
             Func<RangeSubstitution, double?> rangeResolver)
         {
-            return CalculateResult(formula, false, substitutionResolver, rangeResolver, false);
+            return CalculateResult(formula, substitutionResolver, rangeResolver, false);
         }
 
         /// <summary>
-        ///    This takes a string as input and returns the calculated result as decimal.
+        ///    This takes a string as input and returns the calculated result as double.
         /// </summary>
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         /// <param name="options"></param>
         /// <returns></returns>
         public static CalculationResult Calculate(string formula, CalculatorOptions options)
         {
-            return CalculateResult(formula, false, options.SubstitutionResolver, options.RangeResolver, options.DetectUnaryMinusInPowersAtStartOfFormula);
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            return CalculateResult(formula, options.SubstitutionResolver, options.RangeResolver,
+                options.DetectUnaryMinusInPowersAtStartOfFormula);
         }
 
-        /// <summary>
-        ///     This will attempt to recalculate if an error was encountered. Will try to skip whitespaces
-        ///     and comments so to prevent number literals and function qualifiers not being identified.
-        /// </summary>
-        /// <param name="formula"></param>
-        /// <param name="secondRun"></param>
-        /// <param name="substitutionResolver">
-        ///     This callback may be used to resolve substitutions. If a null value is returned
-        ///     by this callback, the formula is considered invalid.
-        /// </param>
-        /// <param name="rangeResolver">This callback may be used to resolve range substitutions. If a null value is returned by this callback,
-        /// the formula is considerd invalid.</param>
-        /// <param name="detectUnaryMinusInPowersAtStartOfFormula"></param>
-        /// <returns></returns>
         private static CalculationResult CalculateResult(string formula,
-            bool secondRun,
             Func<string, double?> substitutionResolver,
             Func<RangeSubstitution, double?> rangeResolver,
             bool detectUnaryMinusInPowersAtStartOfFormula)
         {
-            if (string.IsNullOrWhiteSpace(formula))
+            var result = CalculateDecimal(formula, new DecimalCalculatorOptions
             {
-                return new CalculationResult
-                {
-                    IsValid = true,
-                    Result = 0
-                };
-            }
-            var inputStream = new AntlrInputStream(formula);
-            var lexer = new CalculatorLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new CalculatorParser(tokenStream);
+                SubstitutionResolver = substitutionResolver == null
+                    ? (Func<string, decimal?>)null
+                    : name => ConvertToDecimal(substitutionResolver(name)),
+                RangeResolver = rangeResolver == null
+                    ? (Func<RangeSubstitution, decimal?>)null
+                    : range => ConvertToDecimal(rangeResolver(range)),
+                DetectUnaryMinusInPowersAtStartOfFormula = detectUnaryMinusInPowersAtStartOfFormula
+            });
+            return new CalculationResult
+            {
+                IsValid = result.IsValid,
+                Result = result.IsValid
+                    ? ConvertToDouble(result.Result.Value)
+                    : double.NaN,
+                ErrorPosition = result.ErrorPosition,
+                ErrorMessage = result.ErrorMessage
+            };
+        }
 
-            // Removing default error listeners due to noise in debug
+        private static double ConvertToDouble(decimal value)
+        {
+            // Older runtimes can round decimal-to-double casts twice.
+            return double.Parse(value.ToString("G29", CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+        }
+
+        private static decimal? ConvertToDecimal(double? value)
+        {
+            if (!value.HasValue)
+            {
+                return null;
+            }
+            if (!decimal.TryParse(value.Value.ToString("G15", CultureInfo.InvariantCulture),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var converted))
+            {
+                throw new DecimalEvaluationException(-1,
+                    "The substitution or range value must be finite and within the decimal range.");
+            }
+            return converted;
+        }
+
+        private static CalculatorParser.ExpressionContext ParseExpression(string formula,
+            out CommonTokenStream tokenStream,
+            out CalculatorErrorListener errorListener)
+        {
+            var lexer = new CalculatorLexer(new AntlrInputStream(formula));
+            tokenStream = new CommonTokenStream(lexer);
+            var parser = new CalculatorParser(tokenStream);
             lexer.RemoveErrorListeners();
             parser.RemoveErrorListeners();
-            // But adding the custom one
-            var customErrorListener = new CalculatorErrorListener();
-            parser.AddErrorListener(customErrorListener);
-            var visitor = new CalculatorVisitor(substitutionResolver,
-                rangeResolver,
-                customErrorListener,
-                detectUnaryMinusInPowersAtStartOfFormula);
+            errorListener = new CalculatorErrorListener();
+            parser.AddErrorListener(errorListener);
 
-            CalculatorParser.ExpressionContext calculatorExpression;
             parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
             try
             {
-                calculatorExpression = parser.calculator().expression();
+                return parser.calculator().expression();
             }
             catch
             {
                 tokenStream.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
-                calculatorExpression = parser.calculator().expression();
+                return parser.calculator().expression();
             }
+        }
 
-            var result = visitor.Visit(calculatorExpression);
-            var isValid = customErrorListener.IsValid;
-            var errorLocation = customErrorListener.ErrorLocation;
-            var errorMessage = customErrorListener.ErrorMessage;
-            if (double.IsInfinity(result))
+        private static string CleanFormula(CommonTokenStream tokenStream, out List<int> originalPositions)
+        {
+            var cleanedFormula = string.Empty;
+            originalPositions = new List<int>();
+            var tokenList = tokenStream.GetTokens().ToList();
+            for (var i = 0; i < tokenList.Count - 1; i++)
             {
-                isValid = false;
+                cleanedFormula += tokenList[i].Text;
+                for (var j = 0; j < tokenList[i].Text.Length; j++)
+                {
+                    originalPositions.Add(tokenList[i].StartIndex + j);
+                }
             }
+            return cleanedFormula;
+        }
 
-            if (!isValid && !secondRun)
-            {
-                var cleanedFormula = string.Empty;
-                var tokenList = tokenStream.GetTokens().ToList();
-                for (var i = 0; i < tokenList.Count - 1; i++)
-                {
-                    cleanedFormula += tokenList[i].Text;
-                }
-                var originalErrorLocation = errorLocation;
-                var retriedResult = CalculateResult(cleanedFormula,
-                    true,
-                    substitutionResolver,
-                    rangeResolver,
-                    detectUnaryMinusInPowersAtStartOfFormula);
-                if (!retriedResult.IsValid)
-                {
-                    retriedResult.ErrorPosition = originalErrorLocation;
-                    retriedResult.ErrorMessage = errorMessage;
-                }
-                return retriedResult;
-            }
-            return new CalculationResult
-            {
-                IsValid = isValid,
-                Result = isValid || double.IsInfinity(result)
-                    ? result
-                    : double.NaN,
-                ErrorPosition = errorLocation,
-                ErrorMessage = isValid ? null : errorMessage
-            };
+        private static int MapErrorPosition(int position, List<int> originalPositions)
+        {
+            return position >= 0 && position < originalPositions.Count
+                ? originalPositions[position]
+                : position;
         }
     }
 }

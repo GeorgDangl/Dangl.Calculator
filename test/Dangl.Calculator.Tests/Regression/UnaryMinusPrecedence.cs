@@ -52,7 +52,6 @@ namespace Dangl.Calculator.Tests.Regression
         }
 
         [Theory]
-        [InlineData("-25,00^0,5", double.NaN, false)]
         [InlineData("-25,00^0,5", -5, true)]
         [InlineData("25,00^0,5", 5, false)]
         [InlineData("25,00^0,5", 5, true)]
@@ -63,6 +62,16 @@ namespace Dangl.Calculator.Tests.Regression
             Assert.Equal(-1, calculationResult.ErrorPosition);
             Assert.True(string.IsNullOrWhiteSpace(calculationResult.ErrorMessage));
             Assert.Equal(expectedResult, calculationResult.Result, 7);
+        }
+
+        [Fact]
+        public void RejectsFractionalPowerOfNegativeNumberWithDefaults()
+        {
+            var result = Calculator.Calculate("-25,00^0,5");
+            Assert.False(result.IsValid);
+            Assert.True(double.IsNaN(result.Result));
+            Assert.Equal(0, result.ErrorPosition);
+            Assert.False(string.IsNullOrWhiteSpace(result.ErrorMessage));
         }
     }
 }
