@@ -4,6 +4,42 @@ namespace Dangl.Calculator.Tests
 {
     public class CalculationErrorListenerTests
     {
+        [Theory]
+        [InlineData("10 0+#missing", "100+#missing", 5)]
+        [InlineData("10/*comment*/0+#missing", "100+#missing", 15)]
+        [InlineData("10\n0+#missing", "100+#missing", 5)]
+        [InlineData("10 0+#start..#end", "100+#start..#end", 5)]
+        public void PreservesEvaluationErrorsAfterCleanup(string formula, string cleanedFormula, int position)
+        {
+            var expected = Calculator.Calculate(cleanedFormula);
+            var actual = Calculator.Calculate(formula);
+
+            Assert.False(actual.IsValid);
+            Assert.Equal(expected.ErrorMessage, actual.ErrorMessage);
+            Assert.Equal(position, actual.ErrorPosition);
+        }
+
+        [Fact]
+        public void PreservesNumericFailureAfterCleanup()
+        {
+            var actual = Calculator.Calculate("10 0+1/0");
+
+            Assert.False(actual.IsValid);
+            Assert.True(double.IsPositiveInfinity(actual.Result));
+            Assert.Null(actual.ErrorMessage);
+            Assert.Equal(-1, actual.ErrorPosition);
+        }
+
+        [Fact]
+        public void PreservesOriginalSyntaxErrorWhenCleanupStillFails()
+        {
+            var actual = Calculator.Calculate("10 0+)");
+
+            Assert.False(actual.IsValid);
+            Assert.Equal(3, actual.ErrorPosition);
+            Assert.Contains("'0'", actual.ErrorMessage);
+        }
+
         [Fact]
         public void IsValidIsTrueOnInitialization()
         {

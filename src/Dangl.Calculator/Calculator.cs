@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Dangl.Calculator
@@ -15,7 +16,7 @@ namespace Dangl.Calculator
         /// <param name="formula">The mathematical expression as string to be calculated.</param>
         public static CalculationResult Calculate(string formula)
         {
-            return CalculateResult(formula, false, _ => null, _ => null, false);
+            return CalculateResult(formula, false, _ => null, _ => null, false, out _);
         }
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace Dangl.Calculator
         /// </param>
         public static CalculationResult Calculate(string formula, Func<string, double?> substitutionResolver)
         {
-            return CalculateResult(formula, false, substitutionResolver, _ => null, false);
+            return CalculateResult(formula, false, substitutionResolver, _ => null, false, out _);
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Dangl.Calculator
             Func<string, double?> substitutionResolver,
             Func<RangeSubstitution, double?> rangeResolver)
         {
-            return CalculateResult(formula, false, substitutionResolver, rangeResolver, false);
+            return CalculateResult(formula, false, substitutionResolver, rangeResolver, false, out _);
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace Dangl.Calculator
         /// <returns></returns>
         public static CalculationResult Calculate(string formula, CalculatorOptions options)
         {
-            return CalculateResult(formula, false, options.SubstitutionResolver, options.RangeResolver, options.DetectUnaryMinusInPowersAtStartOfFormula);
+            return CalculateResult(formula, false, options.SubstitutionResolver, options.RangeResolver, options.DetectUnaryMinusInPowersAtStartOfFormula, out _);
         }
 
         /// <summary>
@@ -72,13 +73,16 @@ namespace Dangl.Calculator
         /// <param name="rangeResolver">This callback may be used to resolve range substitutions. If a null value is returned by this callback,
         /// the formula is considerd invalid.</param>
         /// <param name="detectUnaryMinusInPowersAtStartOfFormula"></param>
+        /// <param name="syntaxError"></param>
         /// <returns></returns>
         private static CalculationResult CalculateResult(string formula,
             bool secondRun,
             Func<string, double?> substitutionResolver,
             Func<RangeSubstitution, double?> rangeResolver,
-            bool detectUnaryMinusInPowersAtStartOfFormula)
+            bool detectUnaryMinusInPowersAtStartOfFormula,
+            out bool syntaxError)
         {
+            syntaxError = false;
             if (string.IsNullOrWhiteSpace(formula))
             {
                 return new CalculationResult
@@ -88,6 +92,7 @@ namespace Dangl.Calculator
                 };
             }
             var calculatorExpression = ParseExpression(formula, out var tokenStream, out var customErrorListener);
+            syntaxError = !customErrorListener.IsValid;
             var visitor = new CalculatorVisitor(substitutionResolver,
                 rangeResolver,
                 customErrorListener,
@@ -104,17 +109,22 @@ namespace Dangl.Calculator
 
             if (!isValid && !secondRun)
             {
-                var cleanedFormula = CleanFormula(tokenStream);
+                var cleanedFormula = CleanFormula(tokenStream, out var originalPositions);
                 var originalErrorLocation = errorLocation;
                 var retriedResult = CalculateResult(cleanedFormula,
                     true,
                     substitutionResolver,
                     rangeResolver,
-                    detectUnaryMinusInPowersAtStartOfFormula);
-                if (!retriedResult.IsValid)
+                    detectUnaryMinusInPowersAtStartOfFormula,
+                    out var retrySyntaxError);
+                if (retrySyntaxError)
                 {
                     retriedResult.ErrorPosition = originalErrorLocation;
                     retriedResult.ErrorMessage = errorMessage;
+                }
+                else if (!retriedResult.IsValid)
+                {
+                    retriedResult.ErrorPosition = MapErrorPosition(retriedResult.ErrorPosition, originalPositions);
                 }
                 return retriedResult;
             }
@@ -124,7 +134,9 @@ namespace Dangl.Calculator
                 Result = isValid || double.IsInfinity(result)
                     ? result
                     : double.NaN,
-                ErrorPosition = errorLocation,
+                ErrorPosition = secondRun && !syntaxError && errorLocation >= 0
+                    ? tokenStream.Get(errorLocation).StartIndex
+                    : errorLocation,
                 ErrorMessage = isValid ? null : errorMessage
             };
         }
@@ -155,15 +167,27 @@ namespace Dangl.Calculator
             }
         }
 
-        private static string CleanFormula(CommonTokenStream tokenStream)
+        private static string CleanFormula(CommonTokenStream tokenStream, out List<int> originalPositions)
         {
             var cleanedFormula = string.Empty;
+            originalPositions = new List<int>();
             var tokenList = tokenStream.GetTokens().ToList();
             for (var i = 0; i < tokenList.Count - 1; i++)
             {
                 cleanedFormula += tokenList[i].Text;
+                for (var j = 0; j < tokenList[i].Text.Length; j++)
+                {
+                    originalPositions.Add(tokenList[i].StartIndex + j);
+                }
             }
             return cleanedFormula;
+        }
+
+        private static int MapErrorPosition(int position, List<int> originalPositions)
+        {
+            return position >= 0 && position < originalPositions.Count
+                ? originalPositions[position]
+                : position;
         }
     }
 }

@@ -236,6 +236,34 @@ namespace Dangl.Calculator.Tests
             Assert.Equal(position, actual.ErrorPosition);
         }
 
+        [Theory]
+        [InlineData("10 0+1/0", "100+1/0", 5)]
+        [InlineData("10/*comment*/0+1/0", "100+1/0", 15)]
+        [InlineData("10\n0+1/0", "100+1/0", 5)]
+        [InlineData("10 0+#missing", "100+#missing", 5)]
+        [InlineData("10 0+#start..#end", "100+#start..#end", 5)]
+        [InlineData("10 0+SQRT(-1)", "100+SQRT(-1)", 5)]
+        public void PreservesEvaluationErrorsAfterCleanup(string formula, string cleanedFormula, int position)
+        {
+            var expected = Calculator.CalculateDecimal(cleanedFormula);
+            var actual = Calculator.CalculateDecimal(formula);
+
+            Assert.False(actual.IsValid);
+            Assert.Null(actual.Result);
+            Assert.Equal(expected.ErrorMessage, actual.ErrorMessage);
+            Assert.Equal(position, actual.ErrorPosition);
+        }
+
+        [Fact]
+        public void PreservesOriginalSyntaxErrorWhenCleanupStillFails()
+        {
+            var actual = Calculator.CalculateDecimal("10 0+)");
+
+            Assert.False(actual.IsValid);
+            Assert.Equal(3, actual.ErrorPosition);
+            Assert.Contains("'0'", actual.ErrorMessage);
+        }
+
         [Fact]
         public void ResolvesDecimalSubstitutionsAndRangesWithoutPrecisionLoss()
         {
