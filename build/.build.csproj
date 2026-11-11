@@ -11,13 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fallout.Common" Version="10.4.0" />
+    <PackageReference Include="Fallout.Common" Version="10.5.0" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.12.0]" />
     <PackageReference Include="Dangl.Fallout.WebDocu" Version="8.0.0" />
     <PackageReference Include="Dangl.Fallout.GitHub" Version="8.0.0" />
     <PackageDownload Include="AzureSignTool" Version="[7.0.1]" />
     <PackageDownload Include="docfx" Version="[2.78.5]" />
-    <PackageReference Include="ReportGenerator" Version="5.5.11" />
+    <PackageReference Include="ReportGenerator" Version="5.6.0" />
   </ItemGroup>
 
   <ItemGroup>
