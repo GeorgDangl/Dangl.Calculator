@@ -74,7 +74,7 @@ namespace Dangl.Calculator
         public override decimal VisitWhole(CalculatorParser.WholeContext context)
         {
             return Binary(context, context.expression(0), context.expression(1),
-                (left, right) => decimal.Truncate(left / right));
+                DecimalMath.WholeDivide);
         }
 
         public override decimal VisitUnary(CalculatorParser.UnaryContext context)

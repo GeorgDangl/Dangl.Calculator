@@ -20,6 +20,11 @@ namespace Dangl.Calculator
         private static readonly BigInteger MaxCoefficient = new BigInteger(decimal.MaxValue);
         private static readonly BigInteger OverflowLimit = (MaxCoefficient + 1) * Scale;
 
+        internal static decimal WholeDivide(decimal left, decimal right)
+        {
+            return (decimal)(ToFixed(left) / ToFixed(right));
+        }
+
         internal static decimal Sqrt(decimal value)
         {
             if (value < 0)
