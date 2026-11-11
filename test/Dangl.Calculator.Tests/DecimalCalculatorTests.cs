@@ -384,6 +384,24 @@ namespace Dangl.Calculator.Tests
             Assert.Equal(double.PositiveInfinity, result.Result);
         }
 
+        [Fact]
+        public void Roundk()
+        {
+            var formula = "roundk(5,475;2)";
+            var expected = 5.48m;
+            var actual = Calculator.CalculateDecimal(formula);
+            Assert.Equal(expected, actual.Result);
+        }
+
+        [Fact]
+        public void Round()
+        {
+            var formula = "round(3,6)";
+            var expected = 4m;
+            var actual = Calculator.CalculateDecimal(formula);
+            Assert.Equal(expected, actual.Result);
+        }
+
         private static decimal Parse(string value)
         {
             return decimal.Parse(value, CultureInfo.InvariantCulture);
