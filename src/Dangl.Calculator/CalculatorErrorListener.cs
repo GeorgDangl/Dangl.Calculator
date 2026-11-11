@@ -19,6 +19,8 @@ namespace Dangl.Calculator
         /// </summary>
         public int ErrorLocation { get; private set; } = -1;
 
+        internal int AbsoluteErrorLocation { get; private set; } = -1;
+
         /// <summary>
         /// Returns the message of an encountered syntax error
         /// </summary>
@@ -30,6 +32,10 @@ namespace Dangl.Calculator
         public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
             IsValid = false;
+            if (ErrorLocation == -1)
+            {
+                AbsoluteErrorLocation = offendingSymbol?.StartIndex ?? charPositionInLine;
+            }
             ErrorLocation = ErrorLocation == -1 ? charPositionInLine : ErrorLocation;
             ErrorMessage = msg;
         }
