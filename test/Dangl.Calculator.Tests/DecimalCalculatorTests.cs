@@ -224,6 +224,11 @@ namespace Dangl.Calculator.Tests
         [InlineData("1 + #start..#end", 4)]
         [InlineData("1+", 2)]
         [InlineData("(1+2]", 4)]
+        [InlineData("1+\n)", 3)]
+        [InlineData("1+\r\n)", 4)]
+        [InlineData("1+\n  )", 5)]
+        [InlineData("1+\n", 3)]
+        [InlineData("(1+\n2]", 5)]
         public void ReportsCharacterPositions(string formula, int position)
         {
             var actual = Calculator.CalculateDecimal(formula);

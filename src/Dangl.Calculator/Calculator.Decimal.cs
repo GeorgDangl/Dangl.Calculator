@@ -71,14 +71,14 @@ namespace Dangl.Calculator
                         substitutionResolver, rangeResolver, detectUnaryMinusInPowersAtStartOfFormula);
                     if (!retried.IsValid)
                     {
-                        retried.ErrorPosition = errorListener.ErrorLocation;
+                        retried.ErrorPosition = errorListener.AbsoluteErrorLocation;
                         retried.ErrorMessage = errorListener.ErrorMessage;
                     }
                     return retried;
                 }
                 return new DecimalCalculationResult
                 {
-                    ErrorPosition = errorListener.ErrorLocation,
+                    ErrorPosition = errorListener.AbsoluteErrorLocation,
                     ErrorMessage = errorListener.ErrorMessage
                 };
             }

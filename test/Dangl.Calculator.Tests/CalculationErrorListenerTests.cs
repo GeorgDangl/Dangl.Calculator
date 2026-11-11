@@ -49,6 +49,19 @@ namespace Dangl.Calculator.Tests
             Assert.Equal(5, errorListener.ErrorLocation);
         }
 
+        [Theory]
+        [InlineData("1+\n)", 0)]
+        [InlineData("1+\r\n)", 0)]
+        [InlineData("1+\n  )", 2)]
+        [InlineData("1+\n", 0)]
+        [InlineData("(1+\n2]", 1)]
+        public void DoubleCalculationPreservesLineRelativeSyntaxErrorPositions(string formula, int position)
+        {
+            var result = Calculator.Calculate(formula);
+            Assert.False(result.IsValid);
+            Assert.Equal(position, result.ErrorPosition);
+        }
+
         [Fact]
         public void CanReportUnresolvableSubstitutions()
         {
