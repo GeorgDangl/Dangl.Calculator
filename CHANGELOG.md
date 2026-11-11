@@ -3,7 +3,10 @@
 All notable changes to **Dangl.Calculator** are documented here.
 
 ## v2.4.0
-- Added `Calculator.CalculateDecimal` with decimal results, substitutions, ranges and options, without changing the existing double API.
+- Added `Calculator.CalculateDecimal` with decimal results, substitutions, ranges and options.
+- **Breaking change:** `Calculator.Calculate` retains its public double signatures but now delegates to the decimal evaluator; the separate double evaluator was removed. Decimal range, precision, rounding and function domain rules apply to both APIs, and signed zero is not retained during evaluation.
+- Double substitution and range callbacks are converted to decimal using invariant `G15` (15 significant digits). Non-finite or out-of-range callback values produce invalid results; callback exceptions still propagate.
+- Invalid double calculations now return `NaN` rather than infinity, with numeric error messages and absolute zero-based character positions instead of line-relative syntax positions.
 - Added decimal-native scientific functions without additional NuGet dependencies.
 - Decimal calculations report syntax, unresolved-value, division-by-zero, domain and overflow errors with a null result.
 - Dropped tests for `net9.0` and added tests for `net11.0`

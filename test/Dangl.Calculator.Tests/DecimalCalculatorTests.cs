@@ -377,11 +377,13 @@ namespace Dangl.Calculator.Tests
         }
 
         [Fact]
-        public void LeavesTheDoubleApiUnchanged()
+        public void DoubleApiReturnsNaNForDecimalEvaluationErrors()
         {
             CalculationResult result = Calculator.Calculate("1/0");
             Assert.False(result.IsValid);
-            Assert.Equal(double.PositiveInfinity, result.Result);
+            Assert.True(double.IsNaN(result.Result));
+            Assert.Equal(0, result.ErrorPosition);
+            Assert.False(string.IsNullOrWhiteSpace(result.ErrorMessage));
         }
 
         [Fact]

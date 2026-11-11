@@ -25,9 +25,9 @@ namespace Dangl.Calculator.Tests
             var actual = Calculator.Calculate("10 0+1/0");
 
             Assert.False(actual.IsValid);
-            Assert.True(double.IsPositiveInfinity(actual.Result));
-            Assert.Null(actual.ErrorMessage);
-            Assert.Equal(-1, actual.ErrorPosition);
+            Assert.True(double.IsNaN(actual.Result));
+            Assert.False(string.IsNullOrWhiteSpace(actual.ErrorMessage));
+            Assert.Equal(5, actual.ErrorPosition);
         }
 
         [Fact]
@@ -86,12 +86,12 @@ namespace Dangl.Calculator.Tests
         }
 
         [Theory]
-        [InlineData("1+\n)", 0)]
-        [InlineData("1+\r\n)", 0)]
-        [InlineData("1+\n  )", 2)]
-        [InlineData("1+\n", 0)]
-        [InlineData("(1+\n2]", 1)]
-        public void DoubleCalculationPreservesLineRelativeSyntaxErrorPositions(string formula, int position)
+        [InlineData("1+\n)", 3)]
+        [InlineData("1+\r\n)", 4)]
+        [InlineData("1+\n  )", 5)]
+        [InlineData("1+\n", 3)]
+        [InlineData("(1+\n2]", 5)]
+        public void DoubleCalculationReportsAbsoluteSyntaxErrorPositions(string formula, int position)
         {
             var result = Calculator.Calculate(formula);
             Assert.False(result.IsValid);
