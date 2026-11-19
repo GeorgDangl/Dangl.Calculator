@@ -14,6 +14,22 @@
         }
       ],
       "dest": "./api"
+    },
+    {
+      "src": [
+        {
+          "src": "./src",
+          "files": [
+            "Dangl.Calculator/*.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ]
+        }
+      ],
+      "dest": "output/docs-markdown/api",
+      "outputFormat": "markdown"
     }
   ],
   "build": {

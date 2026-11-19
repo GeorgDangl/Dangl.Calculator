@@ -348,6 +348,7 @@ class Build : FalloutBuild
             environmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", GitVersion.BranchName);
             var docFxPath = NuGetToolPathResolver.GetPackageExecutable("docfx", "tools/net9.0/any/docfx.dll");
             DotNet($"{docFxPath} {DocFxFile}", environmentVariables: environmentVariables);
+            MarkdownDocumentation.Create(DocFxFile, OutputDirectory / "docs-markdown");
 
             File.Delete(SolutionDirectory / "index.md");
             Directory.Delete(SolutionDirectory / "api", true);
@@ -366,6 +367,7 @@ class Build : FalloutBuild
                 .SetDocuBaseUrl(DocuBaseUrl)
                 .SetDocuApiKey(DocuApiKey)
                 .SetMarkdownChangelog(changeLog)
+                .SetMarkdownPackagePath(OutputDirectory / "docs-markdown.zip")
                 .SetSourceDirectory(OutputDirectory / "docs")
                 .SetVersion(GitVersion.NuGetVersion)
             );
