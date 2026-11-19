@@ -2,6 +2,9 @@
 
 All notable changes to **Dangl.Calculator** are documented here.
 
+## v2.4.1
+- **Dangl.Calculator** now also produces Markdown documentation. This can be easily accessed by AI agents via the MCP server implementation in **Dangl**Docu.
+
 ## v2.4.0
 - Added `Calculator.CalculateDecimal` with decimal results, substitutions, ranges and options.
 - **Breaking change:** `Calculator.Calculate` retains its public double signatures but now delegates to the decimal evaluator; the separate double evaluator was removed. Decimal range, precision, rounding and function domain rules apply to both APIs, and signed zero is not retained during evaluation.
