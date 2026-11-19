@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using static Fallout.Common.IO.Globbing;
+using GlobExpressions;
 
 internal static class MarkdownDocumentation
 {
@@ -12,6 +13,7 @@ internal static class MarkdownDocumentation
     {
         var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
         outputDirectory = Path.GetFullPath(outputDirectory);
+        var artifactDirectory = Path.GetDirectoryName(outputDirectory);
         Directory.CreateDirectory(outputDirectory);
         using var config = JsonDocument.Parse(File.ReadAllText(configFile));
         var build = config.RootElement.GetProperty("build");
@@ -31,12 +33,12 @@ internal static class MarkdownDocumentation
                 var exclusions = Patterns(mapping, "exclude");
                 var excluded = exclusions.Length == 0
                     ? Enumerable.Empty<string>()
-                    : GlobFiles(source, exclusions);
-                var files = GlobFiles(source, Patterns(mapping, "files")).Except(excluded);
+                    : Files(source, exclusions);
+                var files = Files(source, Patterns(mapping, "files")).Except(excluded);
 
                 foreach (var file in files)
                 {
-                    if (Path.GetFullPath(file).StartsWith(outputDirectory + Path.DirectorySeparatorChar,
+                    if (Path.GetFullPath(file).StartsWith(artifactDirectory + Path.DirectorySeparatorChar,
                         StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
@@ -110,5 +112,11 @@ internal static class MarkdownDocumentation
         return patterns.ValueKind == JsonValueKind.String
             ? new[] { patterns.GetString() }
             : patterns.EnumerateArray().Select(pattern => pattern.GetString()).ToArray();
+    }
+
+    private static IEnumerable<string> Files(string directory, string[] patterns)
+    {
+        return patterns.SelectMany(pattern => Glob.Files(new DirectoryInfo(directory),
+            pattern.Replace("**.", "**/*."), GlobOptions.CaseInsensitive)).Select(file => file.FullName);
     }
 }
